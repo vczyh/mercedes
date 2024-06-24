@@ -55,7 +55,7 @@ func (c *Client) Connect(ctx context.Context) error {
 		"Accept-Language":    {"zh-CN,zh-Hans;q=0.9"},
 	}
 
-	conn, _, err := dialer.DialContext(ctx, RegionProviders[RegionChina].WebSocketURL, header)
+	conn, _, err := dialer.DialContext(ctx, RegionProviders[c.region].WebSocketURL, header)
 	if err != nil {
 		return err
 	}
@@ -408,7 +408,7 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 	}
 
 	if err := requests.
-		URL(RegionProviders[RegionChina].OAuth2URL).
+		URL(RegionProviders[c.region].OAuth2URL).
 		Post().
 		ContentType("application/x-www-form-urlencoded").
 		BodyForm(url.Values{
