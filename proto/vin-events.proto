@@ -1,0 +1,12 @@
+syntax = "proto3";
+package proto;
+
+option java_package = "com.daimler.mbcarkit.proto";
+option go_package = "/pb";
+
+
+
+message VINUpdate {
+    repeated string addedVINs = 1;
+    repeated string deletedVINs = 2;
+}
