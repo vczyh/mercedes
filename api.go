@@ -79,7 +79,7 @@ type ConfigResponse struct {
 		Status   string `json:"status"`
 		StoreUrl string `json:"storeUrl"`
 	} `json:"forceUpdate"`
-	VehicleImagesBaseUrl string
+	VehicleImagesBaseUrl string `json:"vehicleImagesBaseUrl"`
 }
 
 type LoginResponse struct {
