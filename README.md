@@ -7,9 +7,9 @@
 ## Usage
 
 ```go
-c := New(
-    WithAccessToken("access_token"),
-    WithRefreshToken("refresh_token"),
+c := mercedes.New(
+    mercedes.WithAccessToken("access_token"),
+    mercedes.WithRefreshToken("refresh_token"),
 )
 _ = c.Connect(context.TODO())
 
