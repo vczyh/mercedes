@@ -37,7 +37,9 @@ func main() {
 					debug := c.IsSet("debug")
 					fmt.Println(email)
 					ctx := context.Background()
-					api := mercedes.NewAPI()
+					api := mercedes.NewAPI(
+						mercedes.WithAPIRegion(mercedes.RegionChina),
+					)
 					configRes, err := api.Config(ctx)
 					if err != nil {
 						return err

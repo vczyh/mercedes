@@ -12,8 +12,14 @@ type API struct {
 	region Region
 }
 
-func NewAPI() *API {
-	return &API{}
+func NewAPI(opts ...APIOption) *API {
+	api := &API{
+		region: RegionChina,
+	}
+	for _, opt := range opts {
+		opt.apply(api)
+	}
+	return api
 }
 
 func (a *API) Config(ctx context.Context) (*ConfigResponse, error) {
@@ -92,4 +98,20 @@ type OAuth2Response struct {
 	RefreshToken string `json:"refresh_token"`
 	TokenType    string `json:"token_type"`
 	ExpiresIn    int    `json:"expires_in"`
+}
+
+func WithAPIRegion(region Region) APIOption {
+	return APIOptionFun(func(api *API) {
+		api.region = region
+	})
+}
+
+type APIOption interface {
+	apply(*API)
+}
+
+type APIOptionFun func(*API)
+
+func (f APIOptionFun) apply(api *API) {
+	f(api)
 }
