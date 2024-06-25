@@ -55,8 +55,7 @@ func main() {
 					}
 					fmt.Println("Email has been sent, please enter your code: ")
 					var code string
-					_, err = fmt.Scanln(&code)
-					if err != nil {
+					if _, err := fmt.Scanln(&code); err != nil {
 						return err
 					}
 					if debug {
