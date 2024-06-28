@@ -36,11 +36,11 @@ func New(opts ...ClientOption) *Client {
 }
 
 func (c *Client) Connect(ctx context.Context) error {
-	if c.refreshToken != "" {
-		if err := c.refreshAccessToken(ctx); err != nil {
-			return err
-		}
-	}
+	//if c.refreshToken != "" {
+	//	if err := c.refreshAccessToken(ctx); err != nil {
+	//		return err
+	//	}
+	//}
 
 	dialer := websocket.DefaultDialer
 	header := http.Header{
