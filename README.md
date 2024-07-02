@@ -7,11 +7,11 @@
 ## Usage
 
 ```go
-var f EventListenFun = func(event MercedesEvent, err error) {
+var f mercedes.EventListenFun = func(event mercedes.MercedesEvent, err error) {
     if err != nil {
         t.Error(err)
     }
-    t.Logf("%s %T %+v\n", time.Now(), event, event)
+    fmt.Printf("%s %T %+v\n", time.Now(), event, event)
 }
 
 c := mercedes.New(
