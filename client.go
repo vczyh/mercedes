@@ -2,17 +2,20 @@ package mercedes
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"github.com/carlmjohnson/requests"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/vczyh/mercedes/proto/pb"
 	"google.golang.org/protobuf/proto"
 	"net/http"
-	"net/url"
 	"strings"
-	"sync"
+	"sync/atomic"
 	"time"
+)
+
+var (
+	ErrNotAllowedCommand = errors.New("not allowed command")
 )
 
 type EventListenFun func(event MercedesEvent, err error)
@@ -26,12 +29,11 @@ type Client struct {
 	conn         *websocket.Conn
 	eventListen  EventListenFun
 	cmdStatus    *SyncMap[string, chan *pb.AppTwinCommandStatus]
+	api          *API
+	vehicles     *GetVehiclesResponse
 
 	err    error
-	errMu  sync.RWMutex
-	setErr sync.Once
-
-	done chan struct{}
+	closed atomic.Bool
 }
 
 func New(opts ...ClientOption) *Client {
@@ -39,11 +41,13 @@ func New(opts ...ClientOption) *Client {
 		region:    RegionChina,
 		sessionId: uuid.New().String(),
 		cmdStatus: new(SyncMap[string, chan *pb.AppTwinCommandStatus]),
-		done:      make(chan struct{}),
+		api:       NewAPI(WithAPIRegion(RegionChina)),
 	}
+
 	for _, opt := range opts {
 		opt.apply(c)
 	}
+
 	return c
 }
 
@@ -53,6 +57,12 @@ func (c *Client) Connect(ctx context.Context) error {
 			return err
 		}
 	}
+
+	vehicles, err := c.api.GetVehicles(ctx, c.accessToken)
+	if err != nil {
+		return err
+	}
+	c.vehicles = vehicles
 
 	dialer := websocket.DefaultDialer
 	header := http.Header{
@@ -66,7 +76,6 @@ func (c *Client) Connect(ctx context.Context) error {
 		"X-Locale":           {"zh-CN"},
 		"Accept-Language":    {"zh-CN,zh-Hans;q=0.9"},
 	}
-
 	conn, _, err := dialer.DialContext(ctx, RegionProviders[c.region].WebSocketURL, header)
 	if err != nil {
 		return err
@@ -74,8 +83,9 @@ func (c *Client) Connect(ctx context.Context) error {
 	c.conn = conn
 
 	go func() {
-		if err := c.handle(); err != nil {
-			c.meetError(err)
+		if err := c.handleWebSocket(ctx); err != nil {
+			c.err = err
+			_ = c.Close()
 			if c.eventListen != nil {
 				c.eventListen(nil, err)
 			}
@@ -85,7 +95,11 @@ func (c *Client) Connect(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) UnLock(vin, pin string) error {
+func (c *Client) UnLock(ctx context.Context, vin, pin string) error {
+	if err := c.checkCommandCapability(ctx, vin, CommandNameDoorsUnlock); err != nil {
+		return err
+	}
+
 	requestId := uuid.New().String()
 	command := &pb.ClientMessage{
 		Msg: &pb.ClientMessage_CommandRequest{
@@ -95,9 +109,6 @@ func (c *Client) UnLock(vin, pin string) error {
 				Command: &pb.CommandRequest_DoorsUnlock{
 					DoorsUnlock: &pb.DoorsUnlock{
 						Pin: pin,
-						//Doors: []pb.Door{
-						//	pb.Door_frontleft,
-						//},
 					},
 				},
 			},
@@ -106,7 +117,58 @@ func (c *Client) UnLock(vin, pin string) error {
 	if err := c.writeMessage(command); err != nil {
 		return err
 	}
+
 	return c.waitCommand(requestId)
+}
+
+func (c *Client) Closed() bool {
+	return c.closed.Load()
+}
+
+func (c *Client) Close() error {
+	if !c.closed.Load() {
+		_ = c.conn.Close()
+		c.cmdStatus.Range(func(_ string, status chan *pb.AppTwinCommandStatus) bool {
+			close(status)
+			return true
+		})
+		c.closed.Store(true)
+	}
+	return nil
+}
+
+func (c *Client) AccessToken() string {
+	return c.accessToken
+}
+
+func (c *Client) GetUserDetail(ctx context.Context) (*GetUserDetailResponse, error) {
+	return c.api.GetUserDetail(ctx, c.accessToken)
+}
+
+func (c *Client) GetVehicles(ctx context.Context) (*GetVehiclesResponse, error) {
+	return c.api.GetVehicles(ctx, c.accessToken)
+}
+
+func (c *Client) checkCommandCapability(ctx context.Context, vin string, commandName string) error {
+	for _, vehicle := range c.vehicles.AssignedVehicles {
+		if vehicle.Vin == vin {
+			capabilities, err := c.api.GetCommandCapabilities(ctx, c.accessToken, vin)
+			if err != nil {
+				return err
+			}
+
+			for _, command := range capabilities.Commands {
+				if command.CommandName == commandName {
+					if command.IsAvailable {
+						return nil
+					} else {
+						return ErrNotAllowedCommand
+					}
+				}
+			}
+		}
+	}
+	return ErrNotAllowedCommand
 }
 
 func (c *Client) waitCommand(requestId string) error {
@@ -114,26 +176,22 @@ func (c *Client) waitCommand(requestId string) error {
 	c.cmdStatus.Set(requestId, status)
 	defer c.cmdStatus.Delete(requestId)
 
-	for {
-		select {
-		case msg := <-status:
-			fmt.Println(msg)
-			if msg.State == pb.VehicleAPI_FINISHED {
-				return nil
-			} else if msg.State == pb.VehicleAPI_FAILED {
-				var errStrs []string
-				for _, err := range msg.Errors {
-					errStrs = append(errStrs, err.String())
-				}
-				return fmt.Errorf("execute command failed: %s", strings.Join(errStrs, " "))
+	for msg := range status {
+		if msg.State == pb.VehicleAPI_FINISHED {
+			return nil
+		} else if msg.State == pb.VehicleAPI_FAILED {
+			var errStrs []string
+			for _, err := range msg.Errors {
+				errStrs = append(errStrs, err.String())
 			}
-		case <-c.done:
-			return c.error()
+			return fmt.Errorf("execute command failed: %s", strings.Join(errStrs, " "))
 		}
 	}
+
+	return c.err
 }
 
-func (c *Client) handle() error {
+func (c *Client) handleWebSocket(ctx context.Context) error {
 	for {
 		_, b, err := c.conn.ReadMessage()
 		if err != nil {
@@ -500,30 +558,13 @@ func (c *Client) handleApptwinCommandStatusUpdatesByVin(message *pb.PushMessage_
 }
 
 func (c *Client) refreshAccessToken(ctx context.Context) error {
-	var res struct {
-		AccessToken string `json:"access_token"`
-		TokenType   string `json:"token_type"`
-		ExpiresIn   int    `json:"expires_in"`
-	}
-
-	if err := requests.
-		URL(RegionProviders[c.region].OAuth2URL).
-		Post().
-		ContentType("application/x-www-form-urlencoded").
-		BodyForm(url.Values{
-			"grant_type":    {"refresh_token"},
-			"refresh_token": {c.refreshToken},
-			"X-Device-Id":   {uuid.New().String()},
-			"X-Request-Id":  {uuid.New().String()},
-		}).
-		ToJSON(&res).
-		Fetch(ctx); err != nil {
+	res, err := c.api.RefreshToken(ctx, c.refreshToken)
+	if err != nil {
 		return err
 	}
 
 	c.accessToken = res.AccessToken
 	c.expireIn = res.ExpiresIn
-
 	return nil
 }
 
@@ -533,21 +574,6 @@ func (c *Client) writeMessage(message proto.Message) error {
 		return err
 	}
 	return c.conn.WriteMessage(websocket.BinaryMessage, b)
-}
-
-func (c *Client) meetError(err error) {
-	c.setErr.Do(func() {
-		c.errMu.Lock()
-		defer c.errMu.Unlock()
-		c.err = err
-		close(c.done)
-	})
-}
-
-func (c *Client) error() error {
-	c.errMu.RLock()
-	defer c.errMu.RUnlock()
-	return c.err
 }
 
 func WithAccessToken(accessToken string) ClientOption {

@@ -19,11 +19,12 @@ c := mercedes.New(
     mercedes.WithRefreshToken("refresh_token"),
     mercedes.WithEventListen(f),
 )
-_ = c.Connect(context.TODO())
+ctx := context.TODO()
 
-_ = c.UnLock("vin", "pin")
+_ = c.Connect(ctx)
+defer c.Close()
 
-<-make(chan struct{})
+_ = c.UnLock(ctx, "vin", "pin")
 ```
 
 ## Get Token

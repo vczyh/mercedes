@@ -1,0 +1,386 @@
+{
+  "commands": [
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "AUXHEAT_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "AUXHEAT_START",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "AUXHEAT_STOP",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "BATTERY_CHARGE_PROGRAM_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "BATTERY_MAX_SOC_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHARGE_OPT_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHARGE_OPT_START",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHARGE_OPT_STOP",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHARGE_PROGRAM_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHILDPRESENCEDETECTION_DEACTIVATEALARM",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "REMOTE_UPDATE_START",
+      "isAvailable": true,
+      "parameters": [
+        {
+          "allowedEnums": null,
+          "maxValue": 0,
+          "minValue": 0,
+          "parameterName": "PKG_ID",
+          "steps": 0
+        },
+        {
+          "allowedEnums": null,
+          "maxValue": 0,
+          "minValue": 0,
+          "parameterName": "RELEASE_PKG_ID",
+          "steps": 0
+        }
+      ]
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "DOORS_LOCK",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "DOORS_UNLOCK",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "ENGINE_START",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "ENGINE_STOP",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_DESELECT_INTERIOR",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_DESELECT_TOW",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_SELECT_INTERIOR",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_SELECT_TOW",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_START",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_STOP",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_CONFIRM_DAMAGEDETECTION",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_DESELECT_DAMAGEDETECTION",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_SELECT_DAMAGEDETECTION",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_SELECT_PICTURE_TAKING",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "THEFTALARM_DESELECT_PICTURE_TAKING",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "SUNROOF_OPEN",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "SUNROOF_LIFT",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "SUNROOF_CLOSE",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "SPEEDALERT_START",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "SPEEDALERT_STOP",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "WEEK_PROFILE_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "WEEK_PROFILE_CONFIGURE_V2",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHARGING_CLOCK_TIMER_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "CHARGING_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "WINDOWS_OPEN",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "WINDOWS_CLOSE",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "WINDOWS_VENTILATE",
+      "isAvailable": true,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "WIPER_HEALTH_RESET",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "ZEV_PRECONDITION_CONFIGURE",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "ZEV_PRECONDITION_CONFIGURE_SEATS",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "ZEV_PRECONDITIONING_START",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "ZEV_PRECONDITIONING_STOP",
+      "isAvailable": false,
+      "parameters": null
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "SIGPOS_START",
+      "isAvailable": true,
+      "parameters": [
+        {
+          "allowedEnums": null,
+          "maxValue": 30,
+          "minValue": 0,
+          "parameterName": "HORN_REPEAT",
+          "steps": 1
+        },
+        {
+          "allowedEnums": [
+            "HORN_LOW_VOLUME",
+            "HORN_HIGH_VOLUME"
+          ],
+          "parameterName": "HORN_TYPE"
+        },
+        {
+          "allowedEnums": [
+            "DIPPED_HEAD_LIGHT",
+            "WARNING_LIGHT"
+          ],
+          "parameterName": "LIGHT_TYPE"
+        },
+        {
+          "allowedEnums": null,
+          "maxValue": 10,
+          "minValue": 0,
+          "parameterName": "SIGPOS_DURATION",
+          "steps": 1
+        },
+        {
+          "allowedEnums": [
+            "LIGHT_ONLY",
+            "HORN_ONLY",
+            "LIGHT_AND_HORN"
+          ],
+          "parameterName": "SIGPOS_TYPE"
+        }
+      ]
+    },
+    {
+      "additionalInformation": null,
+      "capabilityInformation": null,
+      "commandName": "TEMPERATURE_CONFIGURE",
+      "isAvailable": true,
+      "parameters": [
+        {
+          "allowedEnums": [
+            "FRONT_LEFT",
+            "FRONT_RIGHT"
+          ],
+          "parameterName": "TEMPERATURE_POINTS_ZONE"
+        },
+        {
+          "allowedEnums": null,
+          "maxValue": 28,
+          "minValue": 16,
+          "parameterName": "TEMPERATURE_POINTS_TEMPERATURE",
+          "steps": 1
+        }
+      ]
+    }
+  ]
+}
