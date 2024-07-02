@@ -30,6 +30,8 @@ type Client struct {
 	err    error
 	errMu  sync.RWMutex
 	setErr sync.Once
+
+	done chan struct{}
 }
 
 func New(opts ...ClientOption) *Client {
@@ -37,6 +39,7 @@ func New(opts ...ClientOption) *Client {
 		region:    RegionChina,
 		sessionId: uuid.New().String(),
 		cmdStatus: new(SyncMap[string, chan *pb.AppTwinCommandStatus]),
+		done:      make(chan struct{}),
 	}
 	for _, opt := range opts {
 		opt.apply(c)
@@ -124,10 +127,8 @@ func (c *Client) waitCommand(requestId string) error {
 				}
 				return fmt.Errorf("execute command failed: %s", strings.Join(errStrs, " "))
 			}
-		default:
-			if err := c.err; err != nil {
-				return err
-			}
+		case <-c.done:
+			return c.error()
 		}
 	}
 }
@@ -143,16 +144,9 @@ func (c *Client) handle() error {
 			return err
 		}
 
-		var events []MercedesEvent
-		switch v := pm.Msg.(type) {
-		case *pb.PushMessage_VepUpdates:
-			events = c.handleVepUpdates(v)
-		case *pb.PushMessage_ApptwinCommandStatusUpdatesByVin:
-			if err := c.handleApptwinCommandStatusUpdatesByVin(v); err != nil {
-				return err
-			}
-		default:
-			fmt.Printf("should handle %T push message\n", v)
+		events, err := c.handlePushMessage(&pm)
+		if err != nil {
+			return err
 		}
 
 		if c.eventListen != nil {
@@ -160,6 +154,18 @@ func (c *Client) handle() error {
 				c.eventListen(e, nil)
 			}
 		}
+	}
+}
+
+func (c *Client) handlePushMessage(pm *pb.PushMessage) ([]MercedesEvent, error) {
+	switch v := pm.Msg.(type) {
+	case *pb.PushMessage_VepUpdates:
+		return c.handleVepUpdates(v), nil
+	case *pb.PushMessage_ApptwinCommandStatusUpdatesByVin:
+		return nil, c.handleApptwinCommandStatusUpdatesByVin(v)
+	default:
+		fmt.Printf("should handle %T push message\n", v)
+		return nil, nil
 	}
 }
 
@@ -534,6 +540,7 @@ func (c *Client) meetError(err error) {
 		c.errMu.Lock()
 		defer c.errMu.Unlock()
 		c.err = err
+		close(c.done)
 	})
 }
 
