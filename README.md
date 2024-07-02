@@ -7,15 +7,23 @@
 ## Usage
 
 ```go
+var f EventListenFun = func(event MercedesEvent, err error) {
+    if err != nil {
+        t.Error(err)
+    }
+    t.Logf("%s %T %+v\n", time.Now(), event, event)
+}
+
 c := mercedes.New(
     mercedes.WithAccessToken("access_token"),
     mercedes.WithRefreshToken("refresh_token"),
+    WithEventListen(f),
 )
 _ = c.Connect(context.TODO())
 
-_ = c.OnListen(func(event MercedesEvent) {
-    fmt.Printf("%s %T %+v\n", time.Now(), event, event)
-})
+_ = c.UnLock("vin", "pin")
+
+<-make(chan struct{})
 ```
 
 ## Get Token

@@ -10,10 +10,12 @@ import (
 	"google.golang.org/protobuf/proto"
 	"net/http"
 	"net/url"
+	"strings"
+	"sync"
 	"time"
 )
 
-type ListenFun func(event MercedesEvent)
+type EventListenFun func(event MercedesEvent, err error)
 
 type Client struct {
 	accessToken  string
@@ -22,12 +24,19 @@ type Client struct {
 	region       Region
 	sessionId    string
 	conn         *websocket.Conn
+	eventListen  EventListenFun
+	cmdStatus    *SyncMap[string, chan *pb.AppTwinCommandStatus]
+
+	err    error
+	errMu  sync.RWMutex
+	setErr sync.Once
 }
 
 func New(opts ...ClientOption) *Client {
 	c := &Client{
 		region:    RegionChina,
 		sessionId: uuid.New().String(),
+		cmdStatus: new(SyncMap[string, chan *pb.AppTwinCommandStatus]),
 	}
 	for _, opt := range opts {
 		opt.apply(c)
@@ -36,11 +45,11 @@ func New(opts ...ClientOption) *Client {
 }
 
 func (c *Client) Connect(ctx context.Context) error {
-	//if c.refreshToken != "" {
-	//	if err := c.refreshAccessToken(ctx); err != nil {
-	//		return err
-	//	}
-	//}
+	if c.refreshToken != "" {
+		if err := c.refreshAccessToken(ctx); err != nil {
+			return err
+		}
+	}
 
 	dialer := websocket.DefaultDialer
 	header := http.Header{
@@ -61,37 +70,97 @@ func (c *Client) Connect(ctx context.Context) error {
 	}
 	c.conn = conn
 
+	go func() {
+		if err := c.handle(); err != nil {
+			c.meetError(err)
+			if c.eventListen != nil {
+				c.eventListen(nil, err)
+			}
+		}
+	}()
+
 	return nil
 }
 
-func (c *Client) OnListen(f ListenFun) error {
+func (c *Client) UnLock(vin, pin string) error {
+	requestId := uuid.New().String()
+	command := &pb.ClientMessage{
+		Msg: &pb.ClientMessage_CommandRequest{
+			CommandRequest: &pb.CommandRequest{
+				Vin:       vin,
+				RequestId: requestId,
+				Command: &pb.CommandRequest_DoorsUnlock{
+					DoorsUnlock: &pb.DoorsUnlock{
+						Pin: pin,
+						//Doors: []pb.Door{
+						//	pb.Door_frontleft,
+						//},
+					},
+				},
+			},
+		},
+	}
+	if err := c.writeMessage(command); err != nil {
+		return err
+	}
+	return c.waitCommand(requestId)
+}
+
+func (c *Client) waitCommand(requestId string) error {
+	status := make(chan *pb.AppTwinCommandStatus)
+	c.cmdStatus.Set(requestId, status)
+	defer c.cmdStatus.Delete(requestId)
+
 	for {
-		_, msg, err := c.conn.ReadMessage()
-		if err != nil {
-			return err
-		}
-		events, err := c.handle(msg)
-		if err != nil {
-			return err
-		}
-		for _, e := range events {
-			f(e)
+		select {
+		case msg := <-status:
+			fmt.Println(msg)
+			if msg.State == pb.VehicleAPI_FINISHED {
+				return nil
+			} else if msg.State == pb.VehicleAPI_FAILED {
+				var errStrs []string
+				for _, err := range msg.Errors {
+					errStrs = append(errStrs, err.String())
+				}
+				return fmt.Errorf("execute command failed: %s", strings.Join(errStrs, " "))
+			}
+		default:
+			if err := c.err; err != nil {
+				return err
+			}
 		}
 	}
 }
-func (c *Client) handle(b []byte) ([]MercedesEvent, error) {
-	var pm pb.PushMessage
-	err := proto.Unmarshal(b, &pm)
-	if err != nil {
-		return nil, err
+
+func (c *Client) handle() error {
+	for {
+		_, b, err := c.conn.ReadMessage()
+		if err != nil {
+			return err
+		}
+		var pm pb.PushMessage
+		if err := proto.Unmarshal(b, &pm); err != nil {
+			return err
+		}
+
+		var events []MercedesEvent
+		switch v := pm.Msg.(type) {
+		case *pb.PushMessage_VepUpdates:
+			events = c.handleVepUpdates(v)
+		case *pb.PushMessage_ApptwinCommandStatusUpdatesByVin:
+			if err := c.handleApptwinCommandStatusUpdatesByVin(v); err != nil {
+				return err
+			}
+		default:
+			fmt.Printf("should handle %T push message\n", v)
+		}
+
+		if c.eventListen != nil {
+			for _, e := range events {
+				c.eventListen(e, nil)
+			}
+		}
 	}
-	switch v := pm.Msg.(type) {
-	case *pb.PushMessage_VepUpdates:
-		return c.handleVepUpdates(v), nil
-	default:
-		fmt.Printf("should handle %T push message\n", v)
-	}
-	return nil, nil
 }
 
 func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []MercedesEvent {
@@ -400,6 +469,30 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Mercedes
 	return events
 }
 
+func (c *Client) handleApptwinCommandStatusUpdatesByVin(message *pb.PushMessage_ApptwinCommandStatusUpdatesByVin) error {
+	update := message.ApptwinCommandStatusUpdatesByVin
+	clientMessage := &pb.ClientMessage{
+		Msg: &pb.ClientMessage_AcknowledgeApptwinCommandStatusUpdateByVin{
+			AcknowledgeApptwinCommandStatusUpdateByVin: &pb.AcknowledgeAppTwinCommandStatusUpdatesByVIN{
+				SequenceNumber: update.SequenceNumber,
+			}},
+	}
+	if err := c.writeMessage(clientMessage); err != nil {
+		return err
+	}
+
+	for _, updateByPid := range update.UpdatesByVin {
+		for _, commandStatus := range updateByPid.UpdatesByPid {
+			c, ok := c.cmdStatus.Get(commandStatus.RequestId)
+			if !ok {
+				continue
+			}
+			c <- commandStatus
+		}
+	}
+	return nil
+}
+
 func (c *Client) refreshAccessToken(ctx context.Context) error {
 	var res struct {
 		AccessToken string `json:"access_token"`
@@ -428,6 +521,28 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 	return nil
 }
 
+func (c *Client) writeMessage(message proto.Message) error {
+	b, err := proto.Marshal(message)
+	if err != nil {
+		return err
+	}
+	return c.conn.WriteMessage(websocket.BinaryMessage, b)
+}
+
+func (c *Client) meetError(err error) {
+	c.setErr.Do(func() {
+		c.errMu.Lock()
+		defer c.errMu.Unlock()
+		c.err = err
+	})
+}
+
+func (c *Client) error() error {
+	c.errMu.RLock()
+	defer c.errMu.RUnlock()
+	return c.err
+}
+
 func WithAccessToken(accessToken string) ClientOption {
 	return clientOptionFun(func(c *Client) {
 		c.accessToken = accessToken
@@ -443,6 +558,12 @@ func WithRefreshToken(refreshToken string) ClientOption {
 func WithRegion(region Region) ClientOption {
 	return clientOptionFun(func(c *Client) {
 		c.region = region
+	})
+}
+
+func WithEventListen(f EventListenFun) ClientOption {
+	return clientOptionFun(func(c *Client) {
+		c.eventListen = f
 	})
 }
 
