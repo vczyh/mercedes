@@ -17,7 +17,7 @@ var f EventListenFun = func(event MercedesEvent, err error) {
 c := mercedes.New(
     mercedes.WithAccessToken("access_token"),
     mercedes.WithRefreshToken("refresh_token"),
-    WithEventListen(f),
+    mercedes.WithEventListen(f),
 )
 _ = c.Connect(context.TODO())
 
