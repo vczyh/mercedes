@@ -10,6 +10,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"net/http"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 )
@@ -34,6 +35,8 @@ type Client struct {
 
 	err    error
 	closed atomic.Bool
+
+	mu sync.Mutex
 }
 
 func New(opts ...ClientOption) *Client {
@@ -84,7 +87,9 @@ func (c *Client) Connect(ctx context.Context) error {
 
 	go func() {
 		if err := c.handleWebSocket(ctx); err != nil {
+			c.mu.Lock()
 			c.err = err
+			c.mu.Unlock()
 			_ = c.Close()
 			if c.eventListen != nil {
 				c.eventListen(nil, err)
@@ -96,6 +101,10 @@ func (c *Client) Connect(ctx context.Context) error {
 }
 
 func (c *Client) UnLock(ctx context.Context, vin, pin string) error {
+	if err := c.Error(); err != nil {
+		return err
+	}
+
 	if err := c.checkCommandCapability(ctx, vin, CommandNameDoorsUnlock); err != nil {
 		return err
 	}
@@ -141,14 +150,6 @@ func (c *Client) AccessToken() string {
 	return c.accessToken
 }
 
-func (c *Client) GetUserDetail(ctx context.Context) (*GetUserDetailResponse, error) {
-	return c.api.GetUserDetail(ctx, c.accessToken)
-}
-
-func (c *Client) GetVehicles(ctx context.Context) (*GetVehiclesResponse, error) {
-	return c.api.GetVehicles(ctx, c.accessToken)
-}
-
 func (c *Client) checkCommandCapability(ctx context.Context, vin string, commandName string) error {
 	for _, vehicle := range c.vehicles.AssignedVehicles {
 		if vehicle.Vin == vin {
@@ -188,7 +189,7 @@ func (c *Client) waitCommand(requestId string) error {
 		}
 	}
 
-	return c.err
+	return c.Error()
 }
 
 func (c *Client) handleWebSocket(ctx context.Context) error {
@@ -574,6 +575,12 @@ func (c *Client) writeMessage(message proto.Message) error {
 		return err
 	}
 	return c.conn.WriteMessage(websocket.BinaryMessage, b)
+}
+
+func (c *Client) Error() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.err
 }
 
 func WithAccessToken(accessToken string) ClientOption {
