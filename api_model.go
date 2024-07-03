@@ -279,9 +279,3 @@ type GetCommandCapabilitiesResponse struct {
 		Parameters            interface{} `json:"parameters"`
 	} `json:"commands"`
 }
-
-func WithAPIRegion(region Region) APIOption {
-	return APIOptionFun(func(api *API) {
-		api.region = region
-	})
-}

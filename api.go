@@ -213,6 +213,12 @@ func (a *API) GetCommandCapabilities(ctx context.Context, token, vin string) (*G
 	return &res, err
 }
 
+func WithAPIRegion(region Region) APIOption {
+	return APIOptionFun(func(api *API) {
+		api.region = region
+	})
+}
+
 type APIOption interface {
 	apply(*API)
 }
