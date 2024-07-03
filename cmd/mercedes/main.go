@@ -35,11 +35,12 @@ func main() {
 						return fmt.Errorf("email is required")
 					}
 					debug := c.IsSet("debug")
-					fmt.Println(email)
+
 					ctx := context.Background()
 					api := mercedes.NewAPI(
 						mercedes.WithAPIRegion(mercedes.RegionChina),
 					)
+
 					configRes, err := api.Config(ctx)
 					if err != nil {
 						return err
@@ -47,6 +48,7 @@ func main() {
 					if debug {
 						fmt.Printf("Config Response: %+v\n", configRes)
 					}
+
 					nonce := uuid.New().String()
 					loginRes, err := api.Login(ctx, email, nonce)
 					if err != nil {
@@ -55,6 +57,7 @@ func main() {
 					if debug {
 						fmt.Printf("Login Response: %+v\n", loginRes)
 					}
+
 					fmt.Println("Email has been sent, please enter your code: ")
 					var code string
 					if _, err := fmt.Scanln(&code); err != nil {
@@ -63,6 +66,7 @@ func main() {
 					if debug {
 						fmt.Printf("Your code: %s\n", code)
 					}
+
 					oauth2Res, err := api.OAuth2(ctx, email, nonce, code)
 					if err != nil {
 						return err
@@ -73,6 +77,7 @@ func main() {
 					fmt.Printf("Access Token: %s\n", oauth2Res.AccessToken)
 					fmt.Printf("Refresh Token: %s\n", oauth2Res.RefreshToken)
 					fmt.Printf("Expires In: %d\n", oauth2Res.ExpiresIn)
+
 					return nil
 				},
 			},
