@@ -9,8 +9,8 @@
 ```go
 var f mercedes.EventListenFun = func(event mercedes.MercedesEvent, err error) {
     if err != nil {
-		// meet error
-		return
+        // meet error 
+        return
     }
     fmt.Printf("%s %T %+v\n", time.Now(), event, event)
 }
