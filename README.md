@@ -42,7 +42,7 @@ mercedes --debug login <email>
 
 | Event                           | Type              | Description |
 |---------------------------------|-------------------|-------------|
-| StarterBatteryStateEvent        |                   |             |
+| StarterBatteryStateEvent        | `Vehicle`         |             |
 | EngineStateEvent                | `Engine`          |             |
 | DistanceResetEvent              | `Reset Statistic` |             |
 | AverageSpeedResetEvent          | `Reset Statistic` |             |
