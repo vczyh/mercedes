@@ -40,55 +40,55 @@ mercedes --debug login <email>
 
 ## Events
 
-| Event                           | Type            | Description |
-|---------------------------------|-----------------|-------------|
-| StarterBatteryStateEvent        |                 |             |
-| EngineStateEvent                | Engine          |             |
-| DistanceResetEvent              | Reset Statistic |             |
-| AverageSpeedResetEvent          | Reset Statistic |             |
-| DrivenTimeResetEvent            | Reset Statistic |             |
-| LiquidConsumptionEvent          | Reset Statistic |             |
-| DistanceStartEvent              | Start Statistic |             |
-| AverageSpeedStartEvent          | Start Statistic |             |
-| DrivenTimeStartEvent            | Start Statistic |             |
-| LiquidConsumptionStartEvent     | Start Statistic |             |
-| OdoEvent                        | Vehicle         |             |
-| OilLevelEvent                   |                 |             |
-| RangeLiquidEvent                |                 |             |
-| TankLevelPercentEvent           |                 |             |
-| RoofTopStatusEvent              | Vehicle         |             |
-| DoorStatusOverallEvent          | Door            |             |
-| DoorStatusFrontLeftEvent        | Door            |             |
-| DoorStatusFrontRightEvent       | Door            |             |
-| DoorStatusRearLeftEvent         | Door            |             |
-| DoorStatusRearRightEvent        | Door            |             |
-| DeckLidStatusEvent              | Door            |             |
-| DoorStatusGasEvent              |                 |             |
-| DoorLockStatusOverallEvent      | Door Lock       |             |
-| DoorLockStatusFrontLeftEvent    | Door Lock       |             |
-| DoorLockStatusFrontRightEvent   | Door Lock       |             |
-| DoorLockStatusRearLeftEvent     | Door Lock       |             |
-| DoorLockStatusRearRightEvent    | Door Lock       |             |
-| DoorLockStatusDeckLidEvent      | Door Lock       |             |
-| DoorLockStatusGasEvent          | Vehicle         |             |
-| DoorLockStatusVehicleEvent      |                 |             |
-| WindowStatusOverallEvent        | Window          |             |
-| WindowStatusRearBlindEvent      |                 |             |
-| WindowStatusRearLeftBlindEvent  |                 |             |
-| WindowStatusRearRightBlindEvent |                 |             |
-| WindowStatusFrontLeftEvent      | Window          |             |
-| WindowStatusFrontRightEvent     | Window          |             |
-| WindowStatusRearLeftEvent       | Window          |             |
-| WindowStatusRearRightEvent      | Window          |             |
-| SunRoofStatusEvent              | Window          |             |
-| WarningWashWaterEvent           |                 |             |
-| WarningCoolantLevelLowEvent     |                 |             |
-| WarningBrakeFluidEvent          |                 |             |
-| WarningBrakeLiningWearEvent     |                 |             |
-| TirePressureFrontLeftEvent      | Tire            |             |
-| TirePressureFrontRightEvent     | Tire            |             |
-| TirePressureRearLeftEvent       | Tire            |             |
-| TirePressureRearRightEvent      | Tire            |             |
+| Event                           | Type              | Description |
+|---------------------------------|-------------------|-------------|
+| StarterBatteryStateEvent        |                   |             |
+| EngineStateEvent                | Engine            |             |
+| DistanceResetEvent              | `Reset statistic` |             |
+| AverageSpeedResetEvent          | `Reset Statistic`   |             |
+| DrivenTimeResetEvent            | `Reset Statistic`   |             |
+| LiquidConsumptionEvent          | `Reset Statistic`   |             |
+| DistanceStartEvent              | Start Statistic   |             |
+| AverageSpeedStartEvent          | Start Statistic   |             |
+| DrivenTimeStartEvent            | Start Statistic   |             |
+| LiquidConsumptionStartEvent     | Start Statistic   |             |
+| OdoEvent                        | Vehicle           |             |
+| OilLevelEvent                   |                   |             |
+| RangeLiquidEvent                |                   |             |
+| TankLevelPercentEvent           |                   |             |
+| RoofTopStatusEvent              | Vehicle           |             |
+| DoorStatusOverallEvent          | Door              |             |
+| DoorStatusFrontLeftEvent        | Door              |             |
+| DoorStatusFrontRightEvent       | Door              |             |
+| DoorStatusRearLeftEvent         | Door              |             |
+| DoorStatusRearRightEvent        | Door              |             |
+| DeckLidStatusEvent              | Door              |             |
+| DoorStatusGasEvent              |                   |             |
+| DoorLockStatusOverallEvent      | Door Lock         |             |
+| DoorLockStatusFrontLeftEvent    | Door Lock         |             |
+| DoorLockStatusFrontRightEvent   | Door Lock         |             |
+| DoorLockStatusRearLeftEvent     | Door Lock         |             |
+| DoorLockStatusRearRightEvent    | Door Lock         |             |
+| DoorLockStatusDeckLidEvent      | Door Lock         |             |
+| DoorLockStatusGasEvent          | Vehicle           |             |
+| DoorLockStatusVehicleEvent      |                   |             |
+| WindowStatusOverallEvent        | Window            |             |
+| WindowStatusRearBlindEvent      |                   |             |
+| WindowStatusRearLeftBlindEvent  |                   |             |
+| WindowStatusRearRightBlindEvent |                   |             |
+| WindowStatusFrontLeftEvent      | Window            |             |
+| WindowStatusFrontRightEvent     | Window            |             |
+| WindowStatusRearLeftEvent       | Window            |             |
+| WindowStatusRearRightEvent      | Window            |             |
+| SunRoofStatusEvent              | Window            |             |
+| WarningWashWaterEvent           |                   |             |
+| WarningCoolantLevelLowEvent     |                   |             |
+| WarningBrakeFluidEvent          |                   |             |
+| WarningBrakeLiningWearEvent     |                   |             |
+| TirePressureFrontLeftEvent      | Tire              |             |
+| TirePressureFrontRightEvent     | Tire              |             |
+| TirePressureRearLeftEvent       | Tire              |             |
+| TirePressureRearRightEvent      | Tire              |             |
 
 ## Thanks
 
