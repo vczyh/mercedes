@@ -19,7 +19,7 @@ var (
 	ErrNotAllowedCommand = errors.New("not allowed command")
 )
 
-type EventListenFun func(event MercedesEvent, err error)
+type EventListenFun func(event Event, err error)
 
 type Client struct {
 	accessToken  string
@@ -100,7 +100,7 @@ func (c *Client) Connect(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) UnLock(ctx context.Context, vin, pin string) error {
+func (c *Client) DoorsUnLock(ctx context.Context, vin, pin string) error {
 	if err := c.Error(); err != nil {
 		return err
 	}
@@ -216,7 +216,7 @@ func (c *Client) handleWebSocket(ctx context.Context) error {
 	}
 }
 
-func (c *Client) handlePushMessage(pm *pb.PushMessage) ([]MercedesEvent, error) {
+func (c *Client) handlePushMessage(pm *pb.PushMessage) ([]Event, error) {
 	switch v := pm.Msg.(type) {
 	case *pb.PushMessage_VepUpdates:
 		return c.handleVepUpdates(v), nil
@@ -228,8 +228,8 @@ func (c *Client) handlePushMessage(pm *pb.PushMessage) ([]MercedesEvent, error) 
 	}
 }
 
-func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []MercedesEvent {
-	var events []MercedesEvent
+func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
+	var events []Event
 
 	for _, update := range message.VepUpdates.Updates {
 		//sequenceNumber := update.SequenceNumber
@@ -246,281 +246,281 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Mercedes
 			}
 			switch name {
 			case AttributeStarterBatteryState:
-				e := StarterBatteryState{
+				e := StarterBatteryStateEvent{
 					AttributeStatus: attributeStatus,
-					State:           StarterBatteryStateType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           StarterBatteryState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeEngineState:
-				e := EngineState{
+				e := EngineStateEvent{
 					AttributeStatus: attributeStatus,
 					Running:         status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDistanceReset:
-				e := DistanceReset{
+				e := DistanceResetEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeAverageSpeedReset:
-				e := AverageSpeedReset{
+				e := AverageSpeedResetEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeDrivenTimeReset:
 				minutes := status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue
-				e := DrivenTimeReset{
+				e := DrivenTimeResetEvent{
 					AttributeStatus: attributeStatus,
 					Value:           time.Minute * time.Duration(minutes),
 				}
 				events = append(events, e)
 			case AttributeLiquidConsumptionReset:
-				e := LiquidConsumptionReset{
+				e := LiquidConsumptionEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeDistanceStart:
-				e := DistanceStart{
+				e := DistanceStartEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeAverageSpeedStart:
-				e := AverageSpeedStart{
+				e := AverageSpeedStartEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeDrivenTimeStart:
 				minutes := status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue
-				e := DrivenTimeStart{
+				e := DrivenTimeStartEvent{
 					AttributeStatus: attributeStatus,
 					Value:           time.Minute * time.Duration(minutes),
 				}
 				events = append(events, e)
 			case AttributeLiquidConsumptionStart:
-				e := LiquidConsumptionStart{
+				e := LiquidConsumptionStartEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeOdo:
-				e := Odo{
+				e := OdoEvent{
 					AttributeStatus: attributeStatus,
 					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeOilLevel:
-				e := OilLevel{
+				e := OilLevelEvent{
 					AttributeStatus: attributeStatus,
 					Level:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeRangeLiquid:
-				e := RangeLiquid{
+				e := RangeLiquidEvent{
 					AttributeStatus: attributeStatus,
 					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeTankLevelPercent:
-				e := TankLevelPercent{
+				e := TankLevelPercentEvent{
 					AttributeStatus: attributeStatus,
 					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeRoofTopStatus:
-				e := RoofTopStatus{
+				e := RoofTopStatusEvent{
 					AttributeStatus: attributeStatus,
 				}
 				events = append(events, e)
 			case AttributeDoorStatusOverall:
-				e := DoorStatusOverall{
+				e := DoorStatusOverallEvent{
 					AttributeStatus: attributeStatus,
 					State:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeDoorStatusFrontLeft:
-				e := DoorStatusFrontLeft{
+				e := DoorStatusFrontLeftEvent{
 					AttributeStatus: attributeStatus,
 					Open:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorStatusFrontRight:
-				e := DoorStatusFrontRight{
+				e := DoorStatusFrontRightEvent{
 					AttributeStatus: attributeStatus,
 					Open:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorStatusRearLeft:
-				e := DoorStatusRearLeft{
+				e := DoorStatusRearLeftEvent{
 					AttributeStatus: attributeStatus,
 					Open:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorStatusRearRight:
-				e := DoorStatusRearRight{
+				e := DoorStatusRearRightEvent{
 					AttributeStatus: attributeStatus,
 					Open:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDeckLidStatus:
-				e := DeckLidStatus{
+				e := DeckLidStatusEvent{
 					AttributeStatus: attributeStatus,
 					Open:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorStatusGas:
-				e := DoorStatusGas{
+				e := DoorStatusGasEvent{
 					AttributeStatus: attributeStatus,
 					State:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusOverall:
-				e := DoorLockStatusOverall{
+				e := DoorLockStatusOverallEvent{
 					AttributeStatus: attributeStatus,
-					State:           DoorLockOverallStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           DoorLockOverallStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusFrontLeft:
-				e := DoorLockStatusFrontLeft{
+				e := DoorLockStatusFrontLeftEvent{
 					AttributeStatus: attributeStatus,
 					UnLocked:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusFrontRight:
-				e := DoorLockStatusFrontRight{
+				e := DoorLockStatusFrontRightEvent{
 					AttributeStatus: attributeStatus,
 					UnLocked:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusRearLeft:
-				e := DoorLockStatusRearLeft{
+				e := DoorLockStatusRearLeftEvent{
 					AttributeStatus: attributeStatus,
 					UnLocked:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusRearRight:
-				e := DoorLockStatusRearRight{
+				e := DoorLockStatusRearRightEvent{
 					AttributeStatus: attributeStatus,
 					UnLocked:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusGas:
-				e := DoorLockStatusGas{
+				e := DoorLockStatusGasEvent{
 					AttributeStatus: attributeStatus,
 					UnLocked:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusDeckLid:
-				e := DoorLockStatusDeckLid{
+				e := DoorLockStatusDeckLidEvent{
 					AttributeStatus: attributeStatus,
 					UnLocked:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeDoorLockStatusVehicle:
-				e := DoorLockStatusVehicle{
+				e := DoorLockStatusVehicleEvent{
 					AttributeStatus: attributeStatus,
 					State:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWindowStatusOverall:
-				e := WindowStatusOverall{
+				e := WindowStatusOverallEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowsOverallStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           WindowsOverallStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWindowStatusRearBlind:
-				e := WindowStatusRearBlind{
+				e := WindowStatusRearBlindEvent{
 					AttributeStatus: attributeStatus,
 				}
 				events = append(events, e)
 			case AttributeWindowStatusRearLeftBlind:
-				e := WindowStatusRearLeftBlind{
+				e := WindowStatusRearLeftBlindEvent{
 					AttributeStatus: attributeStatus,
 				}
 				events = append(events, e)
 			case AttributeWindowStatusRearRightBlind:
-				e := WindowStatusRearRightBlind{
+				e := WindowStatusRearRightBlindEvent{
 					AttributeStatus: attributeStatus,
 				}
 				events = append(events, e)
 			case AttributeWindowStatusFrontLeft:
-				e := WindowStatusFrontLeft{
+				e := WindowStatusFrontLeftEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWindowStatusFrontRight:
-				e := WindowStatusFrontRight{
+				e := WindowStatusFrontRightEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWindowStatusRearLeft:
-				e := WindowStatusRearLeft{
+				e := WindowStatusRearLeftEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWindowStatusRearRight:
-				e := WindowStatusRearRight{
+				e := WindowStatusRearRightEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeSunRoofStatus:
-				e := SunRoofStatus{
+				e := SunRoofStatusEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowStatusType(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWarningWashWater:
-				e := WarningWashWater{
+				e := WarningWashWaterEvent{
 					AttributeStatus: attributeStatus,
 					Warning:         status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeWarningCoolantLevelLow:
-				e := WarningCoolantLevelLow{
+				e := WarningCoolantLevelLowEvent{
 					AttributeStatus: attributeStatus,
 					Warning:         status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeWarningBrakeFluid:
-				e := WarningBrakeFluid{
+				e := WarningBrakeFluidEvent{
 					AttributeStatus: attributeStatus,
 					Warning:         status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeWarningBrakeLiningWear:
-				e := WarningBrakeLiningWear{
+				e := WarningBrakeLiningWearEvent{
 					AttributeStatus: attributeStatus,
 					Warning:         status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
 				}
 				events = append(events, e)
 			case AttributeTirePressureFrontLeft:
-				e := TirePressureFrontLeft{
+				e := TirePressureFrontLeftEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeTirePressureFrontRight:
-				e := TirePressureFrontRight{
+				e := TirePressureFrontRightEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeTirePressureRearLeft:
-				e := TirePressureRearLeft{
+				e := TirePressureRearLeftEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
 			case AttributeTirePressureRearRight:
-				e := TirePressureRearRight{
+				e := TirePressureRearRightEvent{
 					AttributeStatus: attributeStatus,
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}

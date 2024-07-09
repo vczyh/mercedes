@@ -56,7 +56,7 @@ const (
 	AttributeTirePressureRearRight      = "tirepressureRearRight"
 )
 
-type MercedesEvent interface {
+type Event interface {
 	mercedesEvent()
 }
 
@@ -101,118 +101,118 @@ type AttributeStatus struct {
 
 func (as AttributeStatus) mercedesEvent() {}
 
-type StarterBatteryStateType uint8
+type StarterBatteryState uint8
 
 const (
-	StarterBatteryStateTypeGreen               StarterBatteryStateType = 0
-	StarterBatteryStateTypeYellow              StarterBatteryStateType = 1
-	StarterBatteryStateTypeRed                 StarterBatteryStateType = 2
-	StarterBatteryStateTypeServiceDisabled     StarterBatteryStateType = 3
-	StarterBatteryStateTypeVehicleNotAvailable                         = 4
+	StarterBatteryStateGreen               StarterBatteryState = 0
+	StarterBatteryStateYellow              StarterBatteryState = 1
+	StarterBatteryStateRed                 StarterBatteryState = 2
+	StarterBatteryStateServiceDisabled     StarterBatteryState = 3
+	StarterBatteryStateVehicleNotAvailable                     = 4
 )
 
-func (t StarterBatteryStateType) String() string {
+func (t StarterBatteryState) String() string {
 	switch t {
-	case StarterBatteryStateTypeGreen:
+	case StarterBatteryStateGreen:
 		return "Vehicle ok"
-	case StarterBatteryStateTypeYellow:
+	case StarterBatteryStateYellow:
 		return "Battery partly charged"
-	case StarterBatteryStateTypeRed:
+	case StarterBatteryStateRed:
 		return "Vehicle not available"
-	case StarterBatteryStateTypeServiceDisabled:
+	case StarterBatteryStateServiceDisabled:
 		return "Remote service disabled"
-	case StarterBatteryStateTypeVehicleNotAvailable:
+	case StarterBatteryStateVehicleNotAvailable:
 		return "Vehicle no longer available"
 	default:
 		return fmt.Sprintf("unsupported starter battery state type: %d", t)
 	}
 }
 
-type StarterBatteryState struct {
+type StarterBatteryStateEvent struct {
 	AttributeStatus
-	State StarterBatteryStateType
+	State StarterBatteryState
 }
 
-type EngineState struct {
+type EngineStateEvent struct {
 	AttributeStatus
 	Running bool
 }
 
-type DistanceReset struct {
+type DistanceResetEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type AverageSpeedReset struct {
+type AverageSpeedResetEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type DrivenTimeReset struct {
+type DrivenTimeResetEvent struct {
 	AttributeStatus
 	Value time.Duration
 }
 
-type LiquidConsumptionReset struct {
+type LiquidConsumptionEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type DistanceStart struct {
+type DistanceStartEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type AverageSpeedStart struct {
+type AverageSpeedStartEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type DrivenTimeStart struct {
+type DrivenTimeStartEvent struct {
 	AttributeStatus
 	Value time.Duration
 }
 
-type LiquidConsumptionStart struct {
+type LiquidConsumptionStartEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type Odo struct {
+type OdoEvent struct {
 	AttributeStatus
 	Value int
 }
 
-type OilLevel struct {
+type OilLevelEvent struct {
 	AttributeStatus
 	Level int
 }
 
-type RangeLiquid struct {
+type RangeLiquidEvent struct {
 	AttributeStatus
 	Value int
 }
 
-type TankLevelPercent struct {
+type TankLevelPercentEvent struct {
 	AttributeStatus
 	Value int
 }
 
-type RoofTopStatus struct {
+type RoofTopStatusEvent struct {
 	AttributeStatus
 }
 
-type DoorOverallStatusType uint8
+type DoorOverallStatus uint8
 
-func (s DoorOverallStatusType) String() string {
+func (s DoorOverallStatus) String() string {
 	switch s {
-	case DoorOverallStatusTypeOpen:
+	case DoorOverallStatusOpen:
 		return "open"
-	case DoorOverallStatusTypeClosed:
+	case DoorOverallStatusClosed:
 		return "closed"
-	case DoorOverallStatusTypeNotExisting:
+	case DoorOverallStatusNotExisting:
 		return "not existing"
-	case DoorOverallStatusTypeUnknown:
+	case DoorOverallStatusUnknown:
 		return "unknown"
 	default:
 		return fmt.Sprintf("unsupported door overall status type: %d", s)
@@ -220,64 +220,64 @@ func (s DoorOverallStatusType) String() string {
 }
 
 const (
-	DoorOverallStatusTypeOpen        DoorOverallStatusType = 0
-	DoorOverallStatusTypeClosed      DoorOverallStatusType = 1
-	DoorOverallStatusTypeNotExisting DoorOverallStatusType = 2
-	DoorOverallStatusTypeUnknown     DoorOverallStatusType = 3
+	DoorOverallStatusOpen        DoorOverallStatus = 0
+	DoorOverallStatusClosed      DoorOverallStatus = 1
+	DoorOverallStatusNotExisting DoorOverallStatus = 2
+	DoorOverallStatusUnknown     DoorOverallStatus = 3
 )
 
-type DoorStatusOverall struct {
+type DoorStatusOverallEvent struct {
 	AttributeStatus
 	State int
 }
 
-type DoorStatusFrontLeft struct {
+type DoorStatusFrontLeftEvent struct {
 	AttributeStatus
 	Open bool
 }
 
-type DoorStatusFrontRight struct {
+type DoorStatusFrontRightEvent struct {
 	AttributeStatus
 	Open bool
 }
 
-type DoorStatusRearLeft struct {
+type DoorStatusRearLeftEvent struct {
 	AttributeStatus
 	Open bool
 }
 
-type DoorStatusRearRight struct {
+type DoorStatusRearRightEvent struct {
 	AttributeStatus
 	Open bool
 }
 
-type DeckLidStatus struct {
+type DeckLidStatusEvent struct {
 	AttributeStatus
 	Open bool
 }
 
 // TODO
-type DoorStatusGas struct {
+type DoorStatusGasEvent struct {
 	AttributeStatus
 	State int
 }
 
-type DoorLockStatusDeckLid struct {
+type DoorLockStatusDeckLidEvent struct {
 	AttributeStatus
 	UnLocked bool
 }
 
-type DoorLockOverallStatusType uint8
+type DoorLockOverallStatus uint8
 
-func (s DoorLockOverallStatusType) String() string {
+func (s DoorLockOverallStatus) String() string {
 	switch s {
-	case DoorLockOverallStatusTypeLocked:
+	case DoorLockOverallStatusLocked:
 		return "locked"
-	case DoorLockOverallStatusTypeUnLocked:
+	case DoorLockOverallStatusUnLocked:
 		return "unlocked"
-	case DoorLockOverallStatusTypeNotExisting:
+	case DoorLockOverallStatusNotExisting:
 		return "not existing"
-	case DoorLockOverallStatusTypeUnknown:
+	case DoorLockOverallStatusUnknown:
 		return "unknown"
 	default:
 		return fmt.Sprintf("unsupported door lock overall status type: %d", s)
@@ -285,50 +285,50 @@ func (s DoorLockOverallStatusType) String() string {
 }
 
 const (
-	DoorLockOverallStatusTypeLocked      DoorLockOverallStatusType = 0
-	DoorLockOverallStatusTypeUnLocked    DoorLockOverallStatusType = 1
-	DoorLockOverallStatusTypeNotExisting DoorLockOverallStatusType = 2
-	DoorLockOverallStatusTypeUnknown     DoorLockOverallStatusType = 3
+	DoorLockOverallStatusLocked      DoorLockOverallStatus = 0
+	DoorLockOverallStatusUnLocked    DoorLockOverallStatus = 1
+	DoorLockOverallStatusNotExisting DoorLockOverallStatus = 2
+	DoorLockOverallStatusUnknown     DoorLockOverallStatus = 3
 )
 
-type DoorLockStatusOverall struct {
+type DoorLockStatusOverallEvent struct {
 	AttributeStatus
-	State DoorLockOverallStatusType
+	State DoorLockOverallStatus
 }
 
-type DoorLockStatusFrontLeft struct {
-	AttributeStatus
-	UnLocked bool
-}
-
-type DoorLockStatusFrontRight struct {
+type DoorLockStatusFrontLeftEvent struct {
 	AttributeStatus
 	UnLocked bool
 }
 
-type DoorLockStatusRearLeft struct {
+type DoorLockStatusFrontRightEvent struct {
 	AttributeStatus
 	UnLocked bool
 }
 
-type DoorLockStatusRearRight struct {
+type DoorLockStatusRearLeftEvent struct {
 	AttributeStatus
 	UnLocked bool
 }
 
-type DoorLockStatusGas struct {
+type DoorLockStatusRearRightEvent struct {
 	AttributeStatus
 	UnLocked bool
 }
 
-type DoorLockStatusVehicle struct {
+type DoorLockStatusGasEvent struct {
+	AttributeStatus
+	UnLocked bool
+}
+
+type DoorLockStatusVehicleEvent struct {
 	AttributeStatus
 	State int
 }
 
-type WindowsOverallStatusType uint8
+type WindowsOverallStatus uint8
 
-func (s WindowsOverallStatusType) String() string {
+func (s WindowsOverallStatus) String() string {
 	switch s {
 	case WindowsOverallStatusOpen:
 		return "open"
@@ -346,50 +346,50 @@ func (s WindowsOverallStatusType) String() string {
 }
 
 const (
-	WindowsOverallStatusOpen           WindowsOverallStatusType = 0
-	WindowsOverallStatusClosed         WindowsOverallStatusType = 1
-	WindowsOverallStatusCompletelyOpen WindowsOverallStatusType = 2
-	WindowsOverallStatusTypeAiring     WindowsOverallStatusType = 3
-	WindowsOverallStatusTypeRunning    WindowsOverallStatusType = 4
+	WindowsOverallStatusOpen           WindowsOverallStatus = 0
+	WindowsOverallStatusClosed         WindowsOverallStatus = 1
+	WindowsOverallStatusCompletelyOpen WindowsOverallStatus = 2
+	WindowsOverallStatusTypeAiring     WindowsOverallStatus = 3
+	WindowsOverallStatusTypeRunning    WindowsOverallStatus = 4
 )
 
-type WindowStatusOverall struct {
+type WindowStatusOverallEvent struct {
 	AttributeStatus
-	State WindowsOverallStatusType
+	State WindowsOverallStatus
 }
 
 // TODO
-type WindowStatusRearBlind struct {
+type WindowStatusRearBlindEvent struct {
 	AttributeStatus
 }
 
-func (e WindowStatusRearBlind) mercedesEvent() {}
+func (e WindowStatusRearBlindEvent) mercedesEvent() {}
 
 // TODO
-type WindowStatusRearLeftBlind struct {
+type WindowStatusRearLeftBlindEvent struct {
 	AttributeStatus
 }
 
 // TODO
-type WindowStatusRearRightBlind struct {
+type WindowStatusRearRightBlindEvent struct {
 	AttributeStatus
 }
 
-type WindowStatusType uint8
+type WindowStatus uint8
 
-func (s WindowStatusType) String() string {
+func (s WindowStatus) String() string {
 	switch s {
-	case WindowStatusTypeIntermediate:
+	case WindowStatusIntermediate:
 		return "intermediate"
-	case WindowStatusTypeOpen:
+	case WindowStatusOpen:
 		return "open"
-	case WindowStatusTypeClosed:
+	case WindowStatusClosed:
 		return "closed"
-	case WindowStatusTypeAiringPosition:
+	case WindowStatusAiringPosition:
 		return "airing position"
-	case WindowStatusTypeAiringIntermediate:
+	case WindowStatusAiringIntermediate:
 		return "airing intermediate"
-	case WindowStatusTypeRunning:
+	case WindowStatusRunning:
 		return "running"
 	default:
 		return fmt.Sprintf("unsupported window status type: %d", s)
@@ -397,75 +397,75 @@ func (s WindowStatusType) String() string {
 }
 
 const (
-	WindowStatusTypeIntermediate       WindowStatusType = 0
-	WindowStatusTypeOpen               WindowStatusType = 1
-	WindowStatusTypeClosed             WindowStatusType = 2
-	WindowStatusTypeAiringPosition     WindowStatusType = 3
-	WindowStatusTypeAiringIntermediate WindowStatusType = 4
-	WindowStatusTypeRunning            WindowStatusType = 5
+	WindowStatusIntermediate       WindowStatus = 0
+	WindowStatusOpen               WindowStatus = 1
+	WindowStatusClosed             WindowStatus = 2
+	WindowStatusAiringPosition     WindowStatus = 3
+	WindowStatusAiringIntermediate WindowStatus = 4
+	WindowStatusRunning            WindowStatus = 5
 )
 
-type WindowStatusFrontLeft struct {
+type WindowStatusFrontLeftEvent struct {
 	AttributeStatus
-	State WindowStatusType
+	State WindowStatus
 }
 
-type WindowStatusFrontRight struct {
+type WindowStatusFrontRightEvent struct {
 	AttributeStatus
-	State WindowStatusType
+	State WindowStatus
 }
 
-type WindowStatusRearLeft struct {
+type WindowStatusRearLeftEvent struct {
 	AttributeStatus
-	State WindowStatusType
+	State WindowStatus
 }
 
-type WindowStatusRearRight struct {
+type WindowStatusRearRightEvent struct {
 	AttributeStatus
-	State WindowStatusType
+	State WindowStatus
 }
 
-type SunRoofStatus struct {
+type SunRoofStatusEvent struct {
 	AttributeStatus
-	State WindowStatusType
+	State WindowStatus
 }
 
-type WarningWashWater struct {
-	AttributeStatus
-	Warning bool
-}
-
-type WarningCoolantLevelLow struct {
+type WarningWashWaterEvent struct {
 	AttributeStatus
 	Warning bool
 }
 
-type WarningBrakeFluid struct {
+type WarningCoolantLevelLowEvent struct {
 	AttributeStatus
 	Warning bool
 }
 
-type WarningBrakeLiningWear struct {
+type WarningBrakeFluidEvent struct {
 	AttributeStatus
 	Warning bool
 }
 
-type TirePressureFrontLeft struct {
+type WarningBrakeLiningWearEvent struct {
+	AttributeStatus
+	Warning bool
+}
+
+type TirePressureFrontLeftEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type TirePressureFrontRight struct {
+type TirePressureFrontRightEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type TirePressureRearLeft struct {
+type TirePressureRearLeftEvent struct {
 	AttributeStatus
 	Value float64
 }
 
-type TirePressureRearRight struct {
+type TirePressureRearRightEvent struct {
 	AttributeStatus
 	Value float64
 }
