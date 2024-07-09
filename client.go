@@ -334,6 +334,7 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 			case AttributeRoofTopStatus:
 				e := RoofTopStatusEvent{
 					AttributeStatus: attributeStatus,
+					State:           RoofTopState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeDoorStatusOverall:
@@ -474,7 +475,7 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 			case AttributeSunRoofStatus:
 				e := SunRoofStatusEvent{
 					AttributeStatus: attributeStatus,
-					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           SunRoofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWarningWashWater:

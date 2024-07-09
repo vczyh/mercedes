@@ -198,8 +198,30 @@ type TankLevelPercentEvent struct {
 	Value int
 }
 
+type RoofTopState uint8
+
+func (s RoofTopState) String() string {
+	switch s {
+	case RoofTopStateUnlocked:
+		return "unlocked"
+	case RoofTopStateOpenLocked:
+		return "open & locked"
+	case RoofTopStateCloseLocked:
+		return "closed & locked"
+	default:
+		return fmt.Sprintf("unsupported roof top state type: %d", s)
+	}
+}
+
+const (
+	RoofTopStateUnlocked    RoofTopState = 0
+	RoofTopStateOpenLocked  RoofTopState = 1
+	RoofTopStateCloseLocked RoofTopState = 2
+)
+
 type RoofTopStatusEvent struct {
 	AttributeStatus
+	State RoofTopState
 }
 
 type DoorOverallStatus uint8
@@ -425,9 +447,60 @@ type WindowStatusRearRightEvent struct {
 	State WindowStatus
 }
 
+type SunRoofStatus uint8
+
+func (s SunRoofStatus) String() string {
+	switch s {
+	case SunRoofStatusClosed:
+		return "closed"
+	case SunRoofStatusOpen:
+		return "open"
+	case SunRoofStatusOpenLifting:
+		return "open lifting"
+	case SunRoofStatusRunning:
+		return "running"
+	case SunRoofStatusAntiBooming:
+		return "anti-booming position"
+	case SunRoofStatusIntermediateSliding:
+		return "sliding intermediate"
+	case SunRoofStatusIntermediateLifting:
+		return "lifting intermediate"
+	case SunRoofStatusOpening:
+		return "opening"
+	case SunRoofStatusClosing:
+		return "closing"
+	case SunRoofStatusAntiBoomingLifting:
+		return "anti-booming lifting"
+	case SunRoofStatusIntermediatePosition:
+		return "intermediate position"
+	case SunRoofStatusOpeningLifting:
+		return "opening lifting"
+	case SunRoofStatusClosingLifting:
+		return "closing lifting"
+	default:
+		return fmt.Sprintf("unsupported sunroof status type: %d", s)
+	}
+}
+
+const (
+	SunRoofStatusClosed               SunRoofStatus = 0
+	SunRoofStatusOpen                 SunRoofStatus = 1
+	SunRoofStatusOpenLifting          SunRoofStatus = 2
+	SunRoofStatusRunning              SunRoofStatus = 3
+	SunRoofStatusAntiBooming          SunRoofStatus = 4
+	SunRoofStatusIntermediateSliding  SunRoofStatus = 5
+	SunRoofStatusIntermediateLifting  SunRoofStatus = 6
+	SunRoofStatusOpening              SunRoofStatus = 7
+	SunRoofStatusClosing              SunRoofStatus = 8
+	SunRoofStatusAntiBoomingLifting   SunRoofStatus = 9
+	SunRoofStatusIntermediatePosition SunRoofStatus = 10
+	SunRoofStatusOpeningLifting       SunRoofStatus = 11
+	SunRoofStatusClosingLifting       SunRoofStatus = 12
+)
+
 type SunRoofStatusEvent struct {
 	AttributeStatus
-	State WindowStatus
+	State SunRoofStatus
 }
 
 type WarningWashWaterEvent struct {
