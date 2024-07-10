@@ -7,16 +7,16 @@
 
 ```go
 var f mercedes.EventListenFun = func (event mercedes.Event, err error) {
-if err != nil {
-return
-}
-fmt.Printf("%s %T %+v\n", time.Now(), event, event)
+    if err != nil {
+        return
+    }
+    fmt.Printf("%s %T %+v\n", time.Now(), event, event)
 }
 
 c := mercedes.New(
-mercedes.WithAccessToken("access_token"),
-mercedes.WithRefreshToken("refresh_token"),
-mercedes.WithEventListen(f),
+    mercedes.WithAccessToken("access_token"),
+    mercedes.WithRefreshToken("refresh_token"),
+    mercedes.WithEventListen(f),
 )
 ctx := context.TODO()
 
