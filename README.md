@@ -7,16 +7,16 @@
 
 ```go
 var f mercedes.EventListenFun = func (event mercedes.Event, err error) {
-    if err != nil {
-        return
-    }
-    fmt.Printf("%s %T %+v\n", time.Now(), event, event)
+if err != nil {
+return
+}
+fmt.Printf("%s %T %+v\n", time.Now(), event, event)
 }
 
 c := mercedes.New(
-    mercedes.WithAccessToken("access_token"),
-    mercedes.WithRefreshToken("refresh_token"),
-    mercedes.WithEventListen(f),
+mercedes.WithAccessToken("access_token"),
+mercedes.WithRefreshToken("refresh_token"),
+mercedes.WithEventListen(f),
 )
 ctx := context.TODO()
 
@@ -83,12 +83,12 @@ mercedes --debug login <email>
 | DoorStatusRearRightEvent                            | `Door`      | Status of the rear right door         |
 | DeckLidStatusEvent                                  | `Door`      | Status of the deck lid                |
 | DoorStatusGasEvent                                  |             | Status of the gas cap door            |
-| DoorLockStatusOverallEvent                          | `Door Lock` | Overall door lock status              |
-| DoorLockStatusFrontLeftEvent                        | `Door Lock` | Lock status of the front left door    |
-| DoorLockStatusFrontRightEvent                       | `Door Lock` | Lock status of the front right door   |
-| DoorLockStatusRearLeftEvent                         | `Door Lock` | Lock status of the rear left door     |
-| DoorLockStatusRearRightEvent                        | `Door Lock` | Lock status of the rear right door    |
-| DoorLockStatusDeckLidEvent                          | `Door Lock` | Lock status of the deck lid           |
+| DoorLockStatusOverallEvent                          | `Door`      | Overall door lock status              |
+| DoorLockStatusFrontLeftEvent                        | `Door`      | Lock status of the front left door    |
+| DoorLockStatusFrontRightEvent                       | `Door`      | Lock status of the front right door   |
+| DoorLockStatusRearLeftEvent                         | `Door`      | Lock status of the rear left door     |
+| DoorLockStatusRearRightEvent                        | `Door`      | Lock status of the rear right door    |
+| DoorLockStatusDeckLidEvent                          | `Door`      | Lock status of the deck lid           |
 | DoorLockStatusVehicleEvent                          |             | Overall lock status of the vehicle    |
 | WindowStatusRearBlindEvent                          | `Blind`     | Status of the rear blind              |
 | WindowStatusRearLeftBlindEvent                      | `Blind`     | Status of the rear left blind         |
