@@ -2,7 +2,6 @@ package mercedes
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -23,16 +22,17 @@ var (
 type EventListenFun func(event Event, err error)
 
 type Client struct {
-	accessToken  string
-	refreshToken string
-	expireIn     int
-	region       Region
-	sessionId    string
-	conn         *websocket.Conn
-	eventListen  EventListenFun
-	cmdStatus    *SyncMap[string, chan *pb.AppTwinCommandStatus]
-	api          *API
-	vehicles     *GetVehiclesResponse
+	accessToken        string
+	refreshToken       string
+	expireIn           int
+	refreshWhenConnect bool
+	region             Region
+	sessionId          string
+	conn               *websocket.Conn
+	eventListen        EventListenFun
+	cmdStatus          *SyncMap[string, chan *pb.AppTwinCommandStatus]
+	api                *API
+	vehicles           *GetVehiclesResponse
 
 	err    error
 	closed atomic.Bool
@@ -56,7 +56,7 @@ func New(opts ...ClientOption) *Client {
 }
 
 func (c *Client) Connect(ctx context.Context) error {
-	if c.refreshToken != "" {
+	if c.refreshWhenConnect && c.refreshToken != "" {
 		if err := c.refreshAccessToken(ctx); err != nil {
 			return err
 		}
@@ -220,11 +220,6 @@ func (c *Client) handleWebSocket(ctx context.Context) error {
 func (c *Client) handlePushMessage(pm *pb.PushMessage) ([]Event, error) {
 	switch v := pm.Msg.(type) {
 	case *pb.PushMessage_VepUpdates:
-		b, err := json.Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		fmt.Println(string(b))
 		return c.handleVepUpdates(v), nil
 	case *pb.PushMessage_ApptwinCommandStatusUpdatesByVin:
 		return nil, c.handleApptwinCommandStatusUpdatesByVin(v)
@@ -368,7 +363,7 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 			case AttributeDoorStatusOverall:
 				e := DoorStatusOverallEvent{
 					AttributeStatus: attributeStatus,
-					State:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           DoorOverallStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeDoorStatusFrontLeft:
@@ -503,7 +498,7 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 			case AttributeSunRoofStatus:
 				e := SunRoofStatusEvent{
 					AttributeStatus: attributeStatus,
-					State:           SunroofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           SunroofState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWarningWashWater:
@@ -662,12 +657,12 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 			case AttributeSunroofStatusFrontBlind:
 				events = append(events, SunroofStatusFrontBlindEvent{
 					AttributeStatus: attributeStatus,
-					State:           SunroofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				})
 			case AttributeSunroofStatusRearBlind:
 				events = append(events, SunroofStatusRearBlindEvent{
 					AttributeStatus: attributeStatus,
-					State:           SunroofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				})
 			case AttributeTemperaturePoints:
 				e := TemperaturePointsEvent{
@@ -846,6 +841,12 @@ func WithAccessToken(accessToken string) ClientOption {
 func WithRefreshToken(refreshToken string) ClientOption {
 	return clientOptionFun(func(c *Client) {
 		c.refreshToken = refreshToken
+	})
+}
+
+func WithRefreshWhenConnect(refresh bool) ClientOption {
+	return clientOptionFun(func(c *Client) {
+		c.refreshWhenConnect = refresh
 	})
 }
 
