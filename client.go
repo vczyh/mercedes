@@ -2,6 +2,7 @@ package mercedes
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -219,6 +220,11 @@ func (c *Client) handleWebSocket(ctx context.Context) error {
 func (c *Client) handlePushMessage(pm *pb.PushMessage) ([]Event, error) {
 	switch v := pm.Msg.(type) {
 	case *pb.PushMessage_VepUpdates:
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(string(b))
 		return c.handleVepUpdates(v), nil
 	case *pb.PushMessage_ApptwinCommandStatusUpdatesByVin:
 		return nil, c.handleApptwinCommandStatusUpdatesByVin(v)
@@ -239,10 +245,10 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 				continue
 			}
 			attributeStatus := AttributeStatus{
-				Vin:           update.Vin,
-				TimestampInMs: status.TimestampInMs,
-				Status:        statusType,
-				Changed:       status.Changed,
+				Vin:     update.Vin,
+				Time:    time.UnixMilli(status.TimestampInMs),
+				Status:  statusType,
+				Changed: status.Changed,
 			}
 			switch name {
 			case AttributeStarterBatteryState:
@@ -282,6 +288,17 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
+			case AttributeDistanceZEReset:
+				e := DistanceZEResetEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				}
+				events = append(events, e)
+			case AttributeDrivenTimeZEReset:
+				events = append(events, DrivenTimeZEResetEvent{
+					AttributeStatus: attributeStatus,
+					Value:           time.Minute * time.Duration(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
 			case AttributeDistanceStart:
 				e := DistanceStartEvent{
 					AttributeStatus: attributeStatus,
@@ -307,6 +324,17 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
+			case AttributeDistanceZEStart:
+				e := DistanceZEStartEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				}
+				events = append(events, e)
+			case AttributeDrivenTimeZEStart:
+				events = append(events, DrivenTimeZEStartEvent{
+					AttributeStatus: attributeStatus,
+					Value:           time.Minute * time.Duration(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
 			case AttributeOdo:
 				e := OdoEvent{
 					AttributeStatus: attributeStatus,
@@ -475,7 +503,7 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 			case AttributeSunRoofStatus:
 				e := SunRoofStatusEvent{
 					AttributeStatus: attributeStatus,
-					State:           SunRoofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+					State:           SunroofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
 			case AttributeWarningWashWater:
@@ -526,6 +554,231 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
 				}
 				events = append(events, e)
+			case AttributeEngineHoodStatus:
+				events = append(events, EngineHoodStatusEvent{
+					AttributeStatus: attributeStatus,
+					Open:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeFilterParticleLoading:
+				events = append(events, FilterParticleLoadingEvent{
+					AttributeStatus: attributeStatus,
+					State:           FilterParticleState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeIgnitionState:
+				events = append(events, IgnitionStateEvent{
+					AttributeStatus: attributeStatus,
+					State:           IgnitionState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeLanguageHU:
+				events = append(events, LanguageHUEvent{
+					AttributeStatus: attributeStatus,
+					State:           LanguageState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeLiquidRangeSkipIndication:
+				events = append(events, LiquidRangeSkipIndicationEvent{
+					AttributeStatus: attributeStatus,
+					Skip:            status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeOverallRange:
+				events = append(events, OverallRangeEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				})
+			case AttributeParkBrakeStatus:
+				events = append(events, ParkBrakeStatusEvent{
+					AttributeStatus: attributeStatus,
+					Active:          status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributePositionHeading:
+				events = append(events, PositionHeadingEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				})
+			case AttributePositionLat:
+				events = append(events, PositionLatEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				})
+			case AttributePositionLong:
+				events = append(events, PositionLongEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				})
+			case AttributeVehiclePositionErrorCode:
+				events = append(events, PositionErrorCodeEvent{
+					AttributeStatus: attributeStatus,
+					State:           PositionErrorState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeProximityCalculationForVehiclePositionRequired:
+				events = append(events, ProximityCalculationForVehiclePositionRequiredEvent{
+					AttributeStatus: attributeStatus,
+					Required:        status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeRemoteStartActive:
+				events = append(events, RemoteStartActiveEvent{
+					AttributeStatus: attributeStatus,
+					Active:          status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeRemoteStartEndTime:
+				events = append(events, RemoteStartEndTimeEvent{
+					AttributeStatus: attributeStatus,
+					Time:            time.Unix(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue, 0),
+				})
+			case AttributeRemoteStartTemperature:
+				events = append(events, RemoteStartTemperatureEvent{
+					AttributeStatus: attributeStatus,
+					Value:           status.AttributeType.(*pb.VehicleAttributeStatus_DoubleValue).DoubleValue,
+				})
+			case AttributeServiceIntervalDays:
+				events = append(events, ServiceIntervalDaysEvent{
+					AttributeStatus: attributeStatus,
+					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeServiceIntervalDistance:
+				events = append(events, ServiceIntervalDistanceEvent{
+					AttributeStatus: attributeStatus,
+					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeSoc:
+				events = append(events, SocEvent{
+					AttributeStatus: attributeStatus,
+					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeSpeedUnitFromIC:
+				events = append(events, SpeedUnitFromICEvent{
+					AttributeStatus: attributeStatus,
+					KmUnit:          !status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeSunroofEvent:
+				events = append(events, SunroofEventEvent{
+					AttributeStatus: attributeStatus,
+					State:           SunroofEventState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeSunroofEventActive:
+				events = append(events, SunroofEventActiveEvent{
+					AttributeStatus: attributeStatus,
+					Active:          status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeSunroofStatusFrontBlind:
+				events = append(events, SunroofStatusFrontBlindEvent{
+					AttributeStatus: attributeStatus,
+					State:           SunroofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeSunroofStatusRearBlind:
+				events = append(events, SunroofStatusRearBlindEvent{
+					AttributeStatus: attributeStatus,
+					State:           SunroofStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTemperaturePoints:
+				e := TemperaturePointsEvent{
+					AttributeStatus: attributeStatus,
+				}
+				points := status.AttributeType.(*pb.VehicleAttributeStatus_TemperaturePointsValue).TemperaturePointsValue
+				for _, point := range points.TemperaturePoints {
+					temperature := point.Temperature
+					switch point.Zone {
+					case "frontCenter":
+						e.FrontCenter = temperature
+					case "frontLeft":
+						e.FrontLeft = temperature
+					case "frontRight":
+						e.FrontRight = temperature
+					case "rearCenter":
+						e.RearCenter = temperature
+					case "rear2center":
+						e.Rear2Center = temperature
+					case "rearLeft":
+						e.RearLeft = temperature
+					case "rearRight":
+						e.RearRight = temperature
+					}
+				}
+				events = append(events, e)
+			case AttributeTemperatureUnitHU:
+				events = append(events, TemperatureUnitHUEvent{
+					AttributeStatus: attributeStatus,
+					CelsiusUnit:     !status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeTireMarkerFrontLeft:
+				events = append(events, TireMarkerFrontLeftEvent{
+					AttributeStatus: attributeStatus,
+					WarningLevel:    TireMarkerWarningLevel(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireMarkerFrontRight:
+				events = append(events, TireMarkerFrontRightEvent{
+					AttributeStatus: attributeStatus,
+					WarningLevel:    TireMarkerWarningLevel(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireMarkerRearLeft:
+				events = append(events, TireMarkerRearLeftEvent{
+					AttributeStatus: attributeStatus,
+					WarningLevel:    TireMarkerWarningLevel(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireMarkerRearRight:
+				events = append(events, TireMarkerRearRightEvent{
+					AttributeStatus: attributeStatus,
+					WarningLevel:    TireMarkerWarningLevel(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTirePressMeasTimestamp:
+				events = append(events, TirePressMeasTimestampEvent{
+					AttributeStatus: attributeStatus,
+					Time:            time.UnixMilli(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireSensorAvailable:
+				events = append(events, TireSensorAvailableEvent{
+					AttributeStatus: attributeStatus,
+					State:           TireSensorState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireWarningsRDK:
+				events = append(events, TireWarningLevelOverallEvent{
+					AttributeStatus: attributeStatus,
+					WarningLevel:    TireMarkerWarningLevel(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireWarningLamp:
+				events = append(events, TireWarningLampEvent{
+					AttributeStatus: attributeStatus,
+					State:           TireLampState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTireWarningSprw:
+				events = append(events, TireWarningSprwEvent{
+					AttributeStatus: attributeStatus,
+					Active:          status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeTireWarningLevelPrw:
+				events = append(events, TireWarningLevelPrwEvent{
+					AttributeStatus: attributeStatus,
+					Level:           TireLevelPrwWarning(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeTrackingStateHU:
+				events = append(events, TrackingStateHUEvent{
+					AttributeStatus: attributeStatus,
+					Active:          status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeVehicleDataConnectionState:
+				events = append(events, VehicleDataConnectionStateEvent{
+					AttributeStatus: attributeStatus,
+					Active:          status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
+			case AttributeVehicleLockState:
+				events = append(events, VehicleLockStateEvent{
+					AttributeStatus: attributeStatus,
+					State:           VehicleLockState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeVTime:
+				events = append(events, VehicleTimeEvent{
+					AttributeStatus: attributeStatus,
+					Time:            time.Unix(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue, 0),
+				})
+			case AttributeWiperHealthPercent:
+				events = append(events, WiperHealthPercentEvent{
+					AttributeStatus: attributeStatus,
+					Value:           int(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
+				})
+			case AttributeWiperLifetimeExceeded:
+				events = append(events, WiperLifetimeExceededEvent{
+					AttributeStatus: attributeStatus,
+					Exceeded:        !status.AttributeType.(*pb.VehicleAttributeStatus_BoolValue).BoolValue,
+				})
 			default:
 				//fmt.Println("unsupported name:", name)
 			}

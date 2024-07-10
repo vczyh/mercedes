@@ -7,53 +7,98 @@ import (
 )
 
 const (
-	AttributeStarterBatteryState        = "starterBatteryState"
-	AttributeEngineState                = "engineState"
-	AttributeDistanceReset              = "distanceReset"
-	AttributeAverageSpeedReset          = "averageSpeedReset"
-	AttributeDrivenTimeReset            = "drivenTimeReset"
-	AttributeLiquidConsumptionReset     = "liquidconsumptionreset"
-	AttributeDistanceStart              = "distanceStart"
-	AttributeAverageSpeedStart          = "averageSpeedStart"
-	AttributeDrivenTimeStart            = "drivenTimeStart"
-	AttributeLiquidConsumptionStart     = "liquidconsumptionstart"
-	AttributeOdo                        = "odo"
-	AttributeOilLevel                   = "oilLevel"
-	AttributeRangeLiquid                = "rangeliquid"
-	AttributeTankLevelPercent           = "tanklevelpercent"
-	AttributeRoofTopStatus              = "rooftopstatus"
-	AttributeDoorStatusOverall          = "doorStatusOverall"
-	AttributeDoorStatusFrontLeft        = "doorstatusfrontleft"
-	AttributeDoorStatusFrontRight       = "doorstatusfrontright"
-	AttributeDoorStatusRearLeft         = "doorstatusrearleft"
-	AttributeDoorStatusRearRight        = "doorstatusrearright"
-	AttributeDeckLidStatus              = "decklidstatus"
-	AttributeDoorStatusGas              = "doorstatusgas"
-	AttributeDoorLockStatusOverall      = "doorLockStatusOverall"
-	AttributeDoorLockStatusFrontLeft    = "doorlockstatusfrontleft"
-	AttributeDoorLockStatusFrontRight   = "doorlockstatusfrontright"
-	AttributeDoorLockStatusRearLeft     = "doorlockstatusrearleft"
-	AttributeDoorLockStatusRearRight    = "doorlockstatusrearright"
-	AttributeDoorLockStatusGas          = "doorlockstatusgas"
-	AttributeDoorLockStatusDeckLid      = "doorlockstatusdecklid"
-	AttributeDoorLockStatusVehicle      = "doorlockstatusvehicle"
-	AttributeWindowStatusOverall        = "windowStatusOverall"
-	AttributeWindowStatusRearBlind      = "windowStatusRearBlind"
-	AttributeWindowStatusRearLeftBlind  = "windowStatusRearLeftBlind"
-	AttributeWindowStatusRearRightBlind = "windowStatusRearRightBlind"
-	AttributeWindowStatusFrontLeft      = "windowstatusfrontleft"
-	AttributeWindowStatusFrontRight     = "windowstatusfrontright"
-	AttributeWindowStatusRearLeft       = "windowstatusrearleft"
-	AttributeWindowStatusRearRight      = "windowstatusrearright"
-	AttributeSunRoofStatus              = "sunroofstatus"
-	AttributeWarningWashWater           = "warningwashwater"
-	AttributeWarningCoolantLevelLow     = "warningcoolantlevellow"
-	AttributeWarningBrakeFluid          = "warningbrakefluid"
-	AttributeWarningBrakeLiningWear     = "warningbrakeliningwear"
-	AttributeTirePressureFrontLeft      = "tirepressureFrontLeft"
-	AttributeTirePressureFrontRight     = "tirepressureFrontRight"
-	AttributeTirePressureRearLeft       = "tirepressureRearLeft"
-	AttributeTirePressureRearRight      = "tirepressureRearRight"
+	AttributeStarterBatteryState                            = "starterBatteryState"
+	AttributeEngineState                                    = "engineState"
+	AttributeDistanceReset                                  = "distanceReset"
+	AttributeAverageSpeedReset                              = "averageSpeedReset"
+	AttributeDrivenTimeReset                                = "drivenTimeReset"
+	AttributeLiquidConsumptionReset                         = "liquidconsumptionreset"
+	AttributeDistanceZEReset                                = "distanceZEReset"
+	AttributeDrivenTimeZEReset                              = "drivenTimeZEReset"
+	AttributeDistanceStart                                  = "distanceStart"
+	AttributeAverageSpeedStart                              = "averageSpeedStart"
+	AttributeDrivenTimeStart                                = "drivenTimeStart"
+	AttributeLiquidConsumptionStart                         = "liquidconsumptionstart"
+	AttributeDistanceZEStart                                = "distanceZEStart"
+	AttributeDrivenTimeZEStart                              = "drivenTimeZEStart"
+	AttributeOdo                                            = "odo"
+	AttributeOilLevel                                       = "oilLevel"
+	AttributeRangeLiquid                                    = "rangeliquid"
+	AttributeTankLevelPercent                               = "tanklevelpercent"
+	AttributeRoofTopStatus                                  = "rooftopstatus"
+	AttributeDoorStatusOverall                              = "doorStatusOverall"
+	AttributeDoorStatusFrontLeft                            = "doorstatusfrontleft"
+	AttributeDoorStatusFrontRight                           = "doorstatusfrontright"
+	AttributeDoorStatusRearLeft                             = "doorstatusrearleft"
+	AttributeDoorStatusRearRight                            = "doorstatusrearright"
+	AttributeDeckLidStatus                                  = "decklidstatus"
+	AttributeDoorStatusGas                                  = "doorstatusgas"
+	AttributeDoorLockStatusOverall                          = "doorLockStatusOverall"
+	AttributeDoorLockStatusFrontLeft                        = "doorlockstatusfrontleft"
+	AttributeDoorLockStatusFrontRight                       = "doorlockstatusfrontright"
+	AttributeDoorLockStatusRearLeft                         = "doorlockstatusrearleft"
+	AttributeDoorLockStatusRearRight                        = "doorlockstatusrearright"
+	AttributeDoorLockStatusGas                              = "doorlockstatusgas"
+	AttributeDoorLockStatusDeckLid                          = "doorlockstatusdecklid"
+	AttributeDoorLockStatusVehicle                          = "doorlockstatusvehicle"
+	AttributeWindowStatusOverall                            = "windowStatusOverall"
+	AttributeWindowStatusRearBlind                          = "windowStatusRearBlind"
+	AttributeWindowStatusRearLeftBlind                      = "windowStatusRearLeftBlind"
+	AttributeWindowStatusRearRightBlind                     = "windowStatusRearRightBlind"
+	AttributeWindowStatusFrontLeft                          = "windowstatusfrontleft"
+	AttributeWindowStatusFrontRight                         = "windowstatusfrontright"
+	AttributeWindowStatusRearLeft                           = "windowstatusrearleft"
+	AttributeWindowStatusRearRight                          = "windowstatusrearright"
+	AttributeSunRoofStatus                                  = "sunroofstatus"
+	AttributeWarningWashWater                               = "warningwashwater"
+	AttributeWarningCoolantLevelLow                         = "warningcoolantlevellow"
+	AttributeWarningBrakeFluid                              = "warningbrakefluid"
+	AttributeWarningBrakeLiningWear                         = "warningbrakeliningwear"
+	AttributeTirePressureFrontLeft                          = "tirepressureFrontLeft"
+	AttributeTirePressureFrontRight                         = "tirepressureFrontRight"
+	AttributeTirePressureRearLeft                           = "tirepressureRearLeft"
+	AttributeTirePressureRearRight                          = "tirepressureRearRight"
+	AttributeEngineHoodStatus                               = "engineHoodStatus"
+	AttributeFilterParticleLoading                          = "filterParticleLoading"
+	AttributeIgnitionState                                  = "ignitionstate"
+	AttributeLanguageHU                                     = "languageHU"
+	AttributeLiquidRangeSkipIndication                      = "liquidRangeSkipIndication"
+	AttributeOverallRange                                   = "overallRange"
+	AttributeParkBrakeStatus                                = "parkbrakestatus"
+	AttributePositionHeading                                = "positionHeading"
+	AttributePositionLat                                    = "positionLat"
+	AttributePositionLong                                   = "positionLong"
+	AttributeVehiclePositionErrorCode                       = "vehiclePositionErrorCode"
+	AttributeProximityCalculationForVehiclePositionRequired = "proximityCalculationForVehiclePositionRequired"
+	AttributeRemoteStartActive                              = "remoteStartActive"
+	AttributeRemoteStartEndTime                             = "remoteStartEndtime"
+	AttributeRemoteStartTemperature                         = "remoteStartTemperature"
+	AttributeServiceIntervalDays                            = "serviceintervaldays"
+	AttributeServiceIntervalDistance                        = "serviceintervaldistance"
+	AttributeSoc                                            = "soc"
+	AttributeSpeedUnitFromIC                                = "speedUnitFromIC"
+	AttributeSunroofEvent                                   = "sunroofEvent"
+	AttributeSunroofEventActive                             = "sunroofEventActive"
+	AttributeSunroofStatusFrontBlind                        = "sunroofStatusFrontBlind"
+	AttributeSunroofStatusRearBlind                         = "sunroofStatusRearBlind"
+	AttributeTemperaturePoints                              = "temperaturePoints"
+	AttributeTemperatureUnitHU                              = "temperatureUnitHU"
+	AttributeTireMarkerFrontLeft                            = "tireMarkerFrontLeft"
+	AttributeTireMarkerFrontRight                           = "tireMarkerFrontRight"
+	AttributeTireMarkerRearLeft                             = "tireMarkerRearLeft"
+	AttributeTireMarkerRearRight                            = "tireMarkerRearRight"
+	AttributeTirePressMeasTimestamp                         = "tirePressMeasTimestamp"
+	AttributeTireSensorAvailable                            = "tireSensorAvailable"
+	AttributeTireWarningsRDK                                = "tirewarningsrdk"
+	AttributeTireWarningLamp                                = "tirewarninglamp"
+	AttributeTireWarningSprw                                = "tirewarningsprw"
+	AttributeTireWarningLevelPrw                            = "tireWarningLevelPrw"
+	AttributeTrackingStateHU                                = "trackingStateHU"
+	AttributeVehicleDataConnectionState                     = "vehicleDataConnectionState"
+	AttributeVehicleLockState                               = "vehicleLockState"
+	AttributeVTime                                          = "vtime"
+	AttributeWiperHealthPercent                             = "wiperHealthPercent"
+	AttributeWiperLifetimeExceeded                          = "wiperLifetimeExceeded"
 )
 
 type Event interface {
@@ -93,10 +138,10 @@ const (
 )
 
 type AttributeStatus struct {
-	Vin           string
-	TimestampInMs int64
-	Status        StatusType
-	Changed       bool
+	Vin     string
+	Time    time.Time
+	Status  StatusType
+	Changed bool
 }
 
 func (as AttributeStatus) mercedesEvent() {}
@@ -158,6 +203,16 @@ type LiquidConsumptionEvent struct {
 	Value float64
 }
 
+type DistanceZEResetEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type DrivenTimeZEResetEvent struct {
+	AttributeStatus
+	Value time.Duration
+}
+
 type DistanceStartEvent struct {
 	AttributeStatus
 	Value float64
@@ -176,6 +231,16 @@ type DrivenTimeStartEvent struct {
 type LiquidConsumptionStartEvent struct {
 	AttributeStatus
 	Value float64
+}
+
+type DistanceZEStartEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type DrivenTimeZEStartEvent struct {
+	AttributeStatus
+	Value time.Duration
 }
 
 type OdoEvent struct {
@@ -447,35 +512,35 @@ type WindowStatusRearRightEvent struct {
 	State WindowStatus
 }
 
-type SunRoofStatus uint8
+type SunroofStatus uint8
 
-func (s SunRoofStatus) String() string {
+func (s SunroofStatus) String() string {
 	switch s {
-	case SunRoofStatusClosed:
+	case SunroofStatusClosed:
 		return "closed"
-	case SunRoofStatusOpen:
+	case SunroofStatusOpen:
 		return "open"
-	case SunRoofStatusOpenLifting:
+	case SunroofStatusOpenLifting:
 		return "open lifting"
-	case SunRoofStatusRunning:
+	case SunroofStatusRunning:
 		return "running"
-	case SunRoofStatusAntiBooming:
+	case SunroofStatusAntiBooming:
 		return "anti-booming position"
-	case SunRoofStatusIntermediateSliding:
+	case SunroofStatusIntermediateSliding:
 		return "sliding intermediate"
-	case SunRoofStatusIntermediateLifting:
+	case SunroofStatusIntermediateLifting:
 		return "lifting intermediate"
-	case SunRoofStatusOpening:
+	case SunroofStatusOpening:
 		return "opening"
-	case SunRoofStatusClosing:
+	case SunroofStatusClosing:
 		return "closing"
-	case SunRoofStatusAntiBoomingLifting:
+	case SunroofStatusAntiBoomingLifting:
 		return "anti-booming lifting"
-	case SunRoofStatusIntermediatePosition:
+	case SunroofStatusIntermediatePosition:
 		return "intermediate position"
-	case SunRoofStatusOpeningLifting:
+	case SunroofStatusOpeningLifting:
 		return "opening lifting"
-	case SunRoofStatusClosingLifting:
+	case SunroofStatusClosingLifting:
 		return "closing lifting"
 	default:
 		return fmt.Sprintf("unsupported sunroof status type: %d", s)
@@ -483,24 +548,24 @@ func (s SunRoofStatus) String() string {
 }
 
 const (
-	SunRoofStatusClosed               SunRoofStatus = 0
-	SunRoofStatusOpen                 SunRoofStatus = 1
-	SunRoofStatusOpenLifting          SunRoofStatus = 2
-	SunRoofStatusRunning              SunRoofStatus = 3
-	SunRoofStatusAntiBooming          SunRoofStatus = 4
-	SunRoofStatusIntermediateSliding  SunRoofStatus = 5
-	SunRoofStatusIntermediateLifting  SunRoofStatus = 6
-	SunRoofStatusOpening              SunRoofStatus = 7
-	SunRoofStatusClosing              SunRoofStatus = 8
-	SunRoofStatusAntiBoomingLifting   SunRoofStatus = 9
-	SunRoofStatusIntermediatePosition SunRoofStatus = 10
-	SunRoofStatusOpeningLifting       SunRoofStatus = 11
-	SunRoofStatusClosingLifting       SunRoofStatus = 12
+	SunroofStatusClosed               SunroofStatus = 0
+	SunroofStatusOpen                 SunroofStatus = 1
+	SunroofStatusOpenLifting          SunroofStatus = 2
+	SunroofStatusRunning              SunroofStatus = 3
+	SunroofStatusAntiBooming          SunroofStatus = 4
+	SunroofStatusIntermediateSliding  SunroofStatus = 5
+	SunroofStatusIntermediateLifting  SunroofStatus = 6
+	SunroofStatusOpening              SunroofStatus = 7
+	SunroofStatusClosing              SunroofStatus = 8
+	SunroofStatusAntiBoomingLifting   SunroofStatus = 9
+	SunroofStatusIntermediatePosition SunroofStatus = 10
+	SunroofStatusOpeningLifting       SunroofStatus = 11
+	SunroofStatusClosingLifting       SunroofStatus = 12
 )
 
 type SunRoofStatusEvent struct {
 	AttributeStatus
-	State SunRoofStatus
+	State SunroofStatus
 }
 
 type WarningWashWaterEvent struct {
@@ -541,4 +606,564 @@ type TirePressureRearLeftEvent struct {
 type TirePressureRearRightEvent struct {
 	AttributeStatus
 	Value float64
+}
+
+type EngineHoodStatusEvent struct {
+	AttributeStatus
+	Open bool
+}
+
+type FilterParticleState uint8
+
+func (s FilterParticleState) String() string {
+	switch s {
+	case FilerParticleStateHigh:
+		return "Air quality high"
+	case FilerParticleStateMedium:
+		return "Air quality medium"
+	case FilerParticleStateLow:
+		return "Air quality low"
+	default:
+		return fmt.Sprintf("unsupported filter particle state type: %d", s)
+	}
+}
+
+const (
+	FilerParticleStateHigh   FilterParticleState = 0
+	FilerParticleStateMedium FilterParticleState = 1
+	FilerParticleStateLow    FilterParticleState = 2
+)
+
+type FilterParticleLoadingEvent struct {
+	AttributeStatus
+	State FilterParticleState
+}
+
+type IgnitionState uint8
+
+func (s IgnitionState) String() string {
+	switch s {
+	case IgnitionStateLock:
+		return "lock"
+	case IgnitionStateOff:
+		return "off"
+	case IgnitionStateAccessory:
+		return "accessory"
+	case IgnitionStateOn:
+		return "on"
+	case IgnitionStateStart:
+		return "start"
+	default:
+		return fmt.Sprintf("unsupported ignition state: %d", s)
+	}
+}
+
+const (
+	IgnitionStateLock      IgnitionState = 0
+	IgnitionStateOff       IgnitionState = 1
+	IgnitionStateAccessory IgnitionState = 2
+	IgnitionStateOn        IgnitionState = 4
+	IgnitionStateStart     IgnitionState = 5
+)
+
+type IgnitionStateEvent struct {
+	AttributeStatus
+	State IgnitionState
+}
+
+type LanguageState uint8
+
+func (s LanguageState) String() string {
+	switch s {
+	case LanguageStateGerman:
+		return "german"
+	case LanguageStateEnglishImp:
+		return "english imp"
+	case LanguageStateFrench:
+		return "french"
+	case LanguageStateItalian:
+		return "italian"
+	case LanguageStateSpanish:
+		return "spanish"
+	case LanguageStateJapanese:
+		return "japanese"
+	case LanguageStateEnglishMet:
+		return "english met"
+	case LanguageStateDutch:
+		return "dutch"
+	case LanguageStateDanisch:
+		return "danisch"
+	case LanguageStateSwedish:
+		return "swedish"
+	case LanguageStateTurkish:
+		return "turkish"
+	case LanguageStatePortuguese:
+		return "portuguese"
+	case LanguageStateRussian:
+		return "russian"
+	case LanguageStateArabic:
+		return "arabic"
+	case LanguageStateChinese:
+		return "chinese"
+	case LanguageStateEnglishAm:
+		return "english am"
+	case LanguageStateTradChinese:
+		return "chinese trad"
+	case LanguageStateKorean:
+		return "korean"
+	case LanguageStateFinnish:
+		return "finnish"
+	case LanguageStatePolish:
+		return "polish"
+	case LanguageStateCzech:
+		return "czech"
+	case LanguageStateProtugueseBrazil:
+		return "portuguese brazil"
+	case LanguageStateNorwegian:
+		return "norwegian"
+	case LanguageStateThai:
+		return "thai"
+	case LanguageStateIndonesian:
+		return "indonesian"
+	case LanguageStateBulgarian:
+		return "bulgarian"
+	case LanguageStateSlovakian:
+		return "slovakian"
+	case LanguageStateCroatian:
+		return "croatian"
+	case LanguageStateSerbian:
+		return "serbian"
+	case LanguageStateHungarian:
+		return "hungarian"
+	case LanguageStateUkrainian:
+		return "ukrainian"
+	case LanguageStateMalayan:
+		return "malayan"
+	case LanguageStateVietnamese:
+		return "vietnamese"
+	case LanguageStateRomanian:
+		return "romanian"
+	case LanguageStateTradChineseTw:
+		return "chinese trad taiwan"
+	case LanguageStateHebrew:
+		return "hebrew"
+	case LanguageStateUnknown:
+		return "unknown"
+	default:
+		return fmt.Sprintf("unsupported language state: %d", s)
+	}
+}
+
+const (
+	LanguageStateGerman           LanguageState = 0
+	LanguageStateEnglishImp       LanguageState = 1
+	LanguageStateFrench           LanguageState = 2
+	LanguageStateItalian          LanguageState = 3
+	LanguageStateSpanish          LanguageState = 4
+	LanguageStateJapanese         LanguageState = 5
+	LanguageStateEnglishMet       LanguageState = 6
+	LanguageStateDutch            LanguageState = 7
+	LanguageStateDanisch          LanguageState = 8
+	LanguageStateSwedish          LanguageState = 9
+	LanguageStateTurkish          LanguageState = 10
+	LanguageStatePortuguese       LanguageState = 11
+	LanguageStateRussian          LanguageState = 12
+	LanguageStateArabic           LanguageState = 13
+	LanguageStateChinese          LanguageState = 14
+	LanguageStateEnglishAm        LanguageState = 15
+	LanguageStateTradChinese      LanguageState = 16
+	LanguageStateKorean           LanguageState = 17
+	LanguageStateFinnish          LanguageState = 18
+	LanguageStatePolish           LanguageState = 19
+	LanguageStateCzech            LanguageState = 20
+	LanguageStateProtugueseBrazil LanguageState = 21
+	LanguageStateNorwegian        LanguageState = 22
+	LanguageStateThai             LanguageState = 23
+	LanguageStateIndonesian       LanguageState = 24
+	LanguageStateBulgarian        LanguageState = 25
+	LanguageStateSlovakian        LanguageState = 26
+	LanguageStateCroatian         LanguageState = 27
+	LanguageStateSerbian          LanguageState = 28
+	LanguageStateHungarian        LanguageState = 29
+	LanguageStateUkrainian        LanguageState = 30
+	LanguageStateMalayan          LanguageState = 31
+	LanguageStateVietnamese       LanguageState = 32
+	LanguageStateRomanian         LanguageState = 33
+	LanguageStateTradChineseTw    LanguageState = 34
+	LanguageStateHebrew           LanguageState = 35
+	LanguageStateUnknown          LanguageState = 36
+)
+
+type LanguageHUEvent struct {
+	AttributeStatus
+	State LanguageState
+}
+
+type LiquidRangeSkipIndicationEvent struct {
+	AttributeStatus
+	Skip bool
+}
+
+type OverallRangeEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type ParkBrakeStatusEvent struct {
+	AttributeStatus
+	Active bool
+}
+
+type PositionHeadingEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type PositionLatEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type PositionLongEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type PositionErrorState uint8
+
+func (s PositionErrorState) String() string {
+	switch s {
+	case PositionErrorStateUnknown:
+		return "unknown"
+	case PositionErrorStateServiceInactive:
+		return "service inactive"
+	case PositionErrorStateTrackingInactive:
+		return "tracking inactive"
+	case PositionErrorStateParked:
+		return "parked"
+	case PositionErrorStateIgnitionOn:
+		return "ignition on"
+	case PositionErrorStateOk:
+		return "ok"
+	default:
+		return fmt.Sprintf("unsupported position error state: %d", s)
+	}
+}
+
+const (
+	PositionErrorStateUnknown          PositionErrorState = 0
+	PositionErrorStateServiceInactive  PositionErrorState = 1
+	PositionErrorStateTrackingInactive PositionErrorState = 2
+	PositionErrorStateParked           PositionErrorState = 3
+	PositionErrorStateIgnitionOn       PositionErrorState = 4
+	PositionErrorStateOk               PositionErrorState = 5
+)
+
+type PositionErrorCodeEvent struct {
+	AttributeStatus
+	State PositionErrorState
+}
+
+type ProximityCalculationForVehiclePositionRequiredEvent struct {
+	AttributeStatus
+	Required bool
+}
+
+type RemoteStartActiveEvent struct {
+	AttributeStatus
+	Active bool
+}
+
+type RemoteStartEndTimeEvent struct {
+	AttributeStatus
+	Time time.Time
+}
+
+type RemoteStartTemperatureEvent struct {
+	AttributeStatus
+	Value float64
+}
+
+type ServiceIntervalDaysEvent struct {
+	AttributeStatus
+	Value int
+}
+
+type ServiceIntervalDistanceEvent struct {
+	AttributeStatus
+	Value int
+}
+
+type SocEvent struct {
+	AttributeStatus
+	Value int
+}
+
+type SpeedUnitFromICEvent struct {
+	AttributeStatus
+
+	// KmUnit true if the unit is km, false if the unit is miles.
+	KmUnit bool
+}
+
+type SunroofEventState int
+
+func (s SunroofEventState) String() string {
+	switch s {
+	case SunroofEventStateNone:
+		return "no event"
+	case SunroofEventStateRainLiftPosition:
+		return "rain lift position"
+	case SunroofEventStateAutomaticLiftPosition:
+		return "automatic lift position"
+	case SunroofEventStateVentilationPosition:
+		return "ventilation position (timer expired)"
+	default:
+		return fmt.Sprintf("unsupported sunroof event state: %d", s)
+	}
+}
+
+const (
+	SunroofEventStateNone                  SunroofEventState = 0
+	SunroofEventStateRainLiftPosition      SunroofEventState = 1
+	SunroofEventStateAutomaticLiftPosition SunroofEventState = 2
+	SunroofEventStateVentilationPosition   SunroofEventState = 3
+)
+
+type SunroofEventEvent struct {
+	AttributeStatus
+	State SunroofEventState
+}
+
+type SunroofEventActiveEvent struct {
+	AttributeStatus
+	Active bool
+}
+
+type SunroofStatusFrontBlindEvent struct {
+	AttributeStatus
+	State SunroofStatus
+}
+
+type SunroofStatusRearBlindEvent struct {
+	AttributeStatus
+	State SunroofStatus
+}
+
+type TemperaturePointsEvent struct {
+	AttributeStatus
+	FrontCenter float64
+	FrontLeft   float64
+	FrontRight  float64
+	RearCenter  float64
+	Rear2Center float64
+	RearLeft    float64
+	RearRight   float64
+}
+
+type TemperatureUnitHUEvent struct {
+	AttributeStatus
+
+	// CelsiusUnit true if the unit is Celsius, false if the unit is Fahrenheit.
+	CelsiusUnit bool
+}
+
+type TireMarkerWarningLevel int
+
+func (l TireMarkerWarningLevel) String() string {
+	switch l {
+	case TireMarkerWarningNone:
+		return "no warning"
+	case TireMarkerWarningSoft:
+		return "soft warning"
+	case TireMarkerWarningLow:
+		return "low warning"
+	case TireMarkerWarningDeflation:
+		return "deflation"
+	case TireMarkerWarningMark:
+		return "unknown warning"
+	default:
+		return fmt.Sprintf("unsupported tire marker warning: %d", l)
+	}
+}
+
+const (
+	TireMarkerWarningNone      TireMarkerWarningLevel = 0
+	TireMarkerWarningSoft      TireMarkerWarningLevel = 1
+	TireMarkerWarningLow       TireMarkerWarningLevel = 2
+	TireMarkerWarningDeflation TireMarkerWarningLevel = 3
+	TireMarkerWarningMark      TireMarkerWarningLevel = 4
+)
+
+type TireMarkerFrontLeftEvent struct {
+	AttributeStatus
+	WarningLevel TireMarkerWarningLevel
+}
+
+type TireMarkerFrontRightEvent struct {
+	AttributeStatus
+	WarningLevel TireMarkerWarningLevel
+}
+
+type TireMarkerRearLeftEvent struct {
+	AttributeStatus
+	WarningLevel TireMarkerWarningLevel
+}
+
+type TireMarkerRearRightEvent struct {
+	AttributeStatus
+	WarningLevel TireMarkerWarningLevel
+}
+
+type TirePressMeasTimestampEvent struct {
+	AttributeStatus
+	Time time.Time
+}
+
+type TireSensorState int
+
+func (s TireSensorState) String() string {
+	switch s {
+	case TireSensorStateAllLocated:
+		return "all sensors located"
+	case TireSensorStateMissingSome:
+		return "1-3 sensors are missing"
+	case TireSensorStateMissingAll:
+		return "all sensors missing"
+	case TireSensorStateError:
+		return "system error"
+	default:
+		return fmt.Sprintf("unsupported tire sensor state: %d", s)
+	}
+}
+
+const (
+	TireSensorStateAllLocated  TireSensorState = 0
+	TireSensorStateMissingSome TireSensorState = 1
+	TireSensorStateMissingAll  TireSensorState = 2
+	TireSensorStateError       TireSensorState = 3
+)
+
+type TireSensorAvailableEvent struct {
+	AttributeStatus
+	State TireSensorState
+}
+
+type TireWarningLevelOverallEvent struct {
+	AttributeStatus
+	WarningLevel TireMarkerWarningLevel
+}
+
+type TireLampState int
+
+func (s TireLampState) String() string {
+	switch s {
+	case TireLampStateInactive:
+		return "inactive"
+	case TireLampStateTriggered:
+		return "triggered"
+	case TireLampStateFlashing:
+		return "flashing"
+	default:
+		return fmt.Sprintf("unsupported tire lamp state: %d", s)
+	}
+}
+
+const (
+	TireLampStateInactive  TireLampState = 0
+	TireLampStateTriggered TireLampState = 1
+	TireLampStateFlashing  TireLampState = 2
+)
+
+type TireWarningLampEvent struct {
+	AttributeStatus
+	State TireLampState
+}
+
+type TireWarningSprwEvent struct {
+	AttributeStatus
+	Active bool
+}
+
+type TireLevelPrwWarning int
+
+func (l TireLevelPrwWarning) String() string {
+	switch l {
+	case TireLevelPrwWarningNone:
+		return "no warning"
+	case TireLevelPrwWarningWarning:
+		return "warning"
+	case TireLevelPrwWarningWorkshop:
+		return "go to workshop"
+	default:
+		return fmt.Sprintf("unsupported tire level prw warning: %d", l)
+	}
+}
+
+const (
+	TireLevelPrwWarningNone     TireLevelPrwWarning = 0
+	TireLevelPrwWarningWarning  TireLevelPrwWarning = 1
+	TireLevelPrwWarningWorkshop TireLevelPrwWarning = 2
+)
+
+type TireWarningLevelPrwEvent struct {
+	AttributeStatus
+	Level TireLevelPrwWarning
+}
+
+type TrackingStateHUEvent struct {
+	AttributeStatus
+	Active bool
+}
+
+type VehicleDataConnectionStateEvent struct {
+	AttributeStatus
+	Active bool
+}
+
+type VehicleLockState int
+
+func (s VehicleLockState) String() string {
+	switch s {
+	case VehicleLockStateUnlocked:
+		return "unlocked"
+	case VehicleLockStateLockedInternal:
+		return "locked internal"
+	case VehicleLockStateLockedExternal:
+		return "locked external"
+	case VehicleLockStateUnlockedSelective:
+		return "unlocked selective"
+	case VehicleLockStateUnknown:
+		return "unknown"
+	default:
+		return fmt.Sprintf("unsupported vehicle lock state: %d", s)
+	}
+}
+
+const (
+	VehicleLockStateUnlocked          VehicleLockState = 0
+	VehicleLockStateLockedInternal    VehicleLockState = 1
+	VehicleLockStateLockedExternal    VehicleLockState = 2
+	VehicleLockStateUnlockedSelective VehicleLockState = 3
+	VehicleLockStateUnknown           VehicleLockState = 4
+)
+
+type VehicleLockStateEvent struct {
+	AttributeStatus
+	State VehicleLockState
+}
+
+type VehicleTimeEvent struct {
+	AttributeStatus
+	Time time.Time
+}
+
+type WiperHealthPercentEvent struct {
+	AttributeStatus
+	Value int
+}
+
+type WiperLifetimeExceededEvent struct {
+	AttributeStatus
+	Exceeded bool
 }
