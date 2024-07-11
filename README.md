@@ -100,7 +100,7 @@ mercedes --debug login <email>
 | WindowStatusFrontRightEvent                         | `Window`    | Status of the front right window      |
 | WindowStatusRearLeftEvent                           | `Window`    | Status of the rear left window        |
 | WindowStatusRearRightEvent                          | `Window`    | Status of the rear right window       |
-| SunRoofStatusEvent                                  | `Window`    | Status of the sunroof                 |
+| SunroofStatusEvent                                  | `Window`    | Status of the sunroof                 |
 | SunroofStatusFrontBlindEvent                        | `Window`    |                                       |
 | SunroofStatusRearBlindEvent                         | `Window`    |                                       |
 | SunroofEventEvent                                   | `Window`    |                                       |
