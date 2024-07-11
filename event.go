@@ -49,7 +49,7 @@ const (
 	AttributeWindowStatusFrontRight                         = "windowstatusfrontright"
 	AttributeWindowStatusRearLeft                           = "windowstatusrearleft"
 	AttributeWindowStatusRearRight                          = "windowstatusrearright"
-	AttributeSunRoofStatus                                  = "sunroofstatus"
+	AttributeSunroofStatus                                  = "sunroofstatus"
 	AttributeWarningWashWater                               = "warningwashwater"
 	AttributeWarningCoolantLevelLow                         = "warningcoolantlevellow"
 	AttributeWarningBrakeFluid                              = "warningbrakefluid"
@@ -563,7 +563,7 @@ const (
 	SunroofStateClosingLifting       SunroofState = 12
 )
 
-type SunRoofStatusEvent struct {
+type SunroofStatusEvent struct {
 	AttributeStatus
 	State SunroofState
 }

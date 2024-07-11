@@ -495,8 +495,8 @@ func (c *Client) handleVepUpdates(message *pb.PushMessage_VepUpdates) []Event {
 					State:           WindowStatus(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
 				events = append(events, e)
-			case AttributeSunRoofStatus:
-				e := SunRoofStatusEvent{
+			case AttributeSunroofStatus:
+				e := SunroofStatusEvent{
 					AttributeStatus: attributeStatus,
 					State:           SunroofState(status.AttributeType.(*pb.VehicleAttributeStatus_IntValue).IntValue),
 				}
